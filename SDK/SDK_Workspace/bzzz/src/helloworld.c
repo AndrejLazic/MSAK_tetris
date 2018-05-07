@@ -93,6 +93,8 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 
 void print(char *str);
 
+#define XPAR_INTC_0_BUZZER_PER_0_VEC_ID 0
+
 int main()
 {
 	 init_platform();
