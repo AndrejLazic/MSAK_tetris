@@ -98,7 +98,7 @@ entity user_logic is
     -- ADD USER GENERICS BELOW THIS LINE ---------------
     --USER generics added here
     RES_TYPE             : natural := 1;
-    TEXT_MEM_DATA_WIDTH  : natural := 6;
+    TEXT_MEM_DATA_WIDTH  : natural := 8;
     GRAPH_MEM_DATA_WIDTH : natural := 32;
     -- ADD USER GENERICS ABOVE THIS LINE ---------------
 
@@ -127,7 +127,8 @@ entity user_logic is
     sync_o         : out std_logic;
     red_o          : out std_logic_vector(7 downto 0);
     green_o        : out std_logic_vector(7 downto 0);
-    blue_o         : out std_logic_vector(7 downto 0);
+    blue_o         : out std_logic_vector(7 downto 0);	
+	interrupt_o	   : out std_logic;
     -- ADD USER PORTS ABOVE THIS LINE ------------------
 
     -- DO NOT EDIT BELOW THIS LINE ---------------------
@@ -191,6 +192,9 @@ architecture IMP of user_logic is
   constant REG_ADDR_04       : std_logic_vector(GRAPH_MEM_ADDR_WIDTH-1 downto 0) := conv_std_logic_vector( 4, GRAPH_MEM_ADDR_WIDTH);
   constant REG_ADDR_05       : std_logic_vector(GRAPH_MEM_ADDR_WIDTH-1 downto 0) := conv_std_logic_vector( 5, GRAPH_MEM_ADDR_WIDTH);
   constant REG_ADDR_06       : std_logic_vector(GRAPH_MEM_ADDR_WIDTH-1 downto 0) := conv_std_logic_vector( 6, GRAPH_MEM_ADDR_WIDTH);
+  constant REG_ADDR_07       : std_logic_vector(GRAPH_MEM_ADDR_WIDTH-1 downto 0) := conv_std_logic_vector( 7, GRAPH_MEM_ADDR_WIDTH);  
+  constant REG_ADDR_08       : std_logic_vector(GRAPH_MEM_ADDR_WIDTH-1 downto 0) := conv_std_logic_vector( 8, GRAPH_MEM_ADDR_WIDTH);
+  constant REG_ADDR_09       : std_logic_vector(GRAPH_MEM_ADDR_WIDTH-1 downto 0) := conv_std_logic_vector( 9, GRAPH_MEM_ADDR_WIDTH);
   
   constant update_period     : std_logic_vector(31 downto 0) := conv_std_logic_vector(1, 32);
   
@@ -240,7 +244,10 @@ architecture IMP of user_logic is
       --
       font_size_i         : in  std_logic_vector(3 downto 0);
       show_frame_i        : in  std_logic;
-      foreground_color_i  : in  std_logic_vector(23 downto 0);
+	foreground_color_1_i: in std_logic_vector(23 downto 0);
+	foreground_color_2_i: in std_logic_vector(23 downto 0);
+	foreground_color_3_i: in std_logic_vector(23 downto 0);
+	foreground_color_4_i: in std_logic_vector(23 downto 0);
       background_color_i  : in  std_logic_vector(23 downto 0);
       frame_color_i       : in  std_logic_vector(23 downto 0);
       -- vga
@@ -308,7 +315,10 @@ architecture IMP of user_logic is
   signal display_mode        : std_logic_vector(1 downto 0);
   signal font_size           : std_logic_vector(3 downto 0);
   signal show_frame          : std_logic;
-  signal foreground_color    : std_logic_vector(23 downto 0);
+  signal foreground_color_1: std_logic_vector(23 downto 0);
+  signal foreground_color_2: std_logic_vector(23 downto 0);
+  signal foreground_color_3: std_logic_vector(23 downto 0);
+  signal foreground_color_4: std_logic_vector(23 downto 0);  
   signal background_color    : std_logic_vector(23 downto 0);
   signal frame_color         : std_logic_vector(23 downto 0);
   
@@ -341,24 +351,30 @@ begin
   process (Bus2IP_Clk, Bus2IP_Resetn) 
   begin
     if (Bus2IP_Resetn='0') then
-      direct_mode      <= '0';
-      display_mode     <= (others => '0');
-      font_size        <= (others => '0');
-      show_frame       <= '0';
-      background_color <= (others => '0');
-      foreground_color <= (others => '0');
-      frame_color      <= (others => '0');
+      direct_mode      		<= '0';
+      display_mode     		<= (others => '0');
+      font_size        		<= (others => '0');
+      show_frame       		<= '0';
+      background_color 		<= (others => '0');
+      foreground_color_1	<= (others => '0');
+      foreground_color_2	<= (others => '0');
+	  foreground_color_3	<= (others => '0');
+      foreground_color_4	<= (others => '0');			
+      frame_color      		<= (others => '0');
     elsif (rising_edge(Bus2IP_Clk)) then 
         if (reg_we = '1') then
           case (unit_addr) is
             -- general registers
-            when REG_ADDR_00 => direct_mode      <= Bus2IP_Data(0);
-            when REG_ADDR_01 => display_mode     <= Bus2IP_Data(1 downto 0);
-            when REG_ADDR_02 => show_frame       <= Bus2IP_Data(0);
-            when REG_ADDR_03 => font_size        <= Bus2IP_Data(3 downto 0);
-            when REG_ADDR_04 => foreground_color <= Bus2IP_Data(23 downto 0);
-            when REG_ADDR_05 => background_color <= Bus2IP_Data(23 downto 0);
-            when REG_ADDR_06 => frame_color      <= Bus2IP_Data(23 downto 0);
+            when REG_ADDR_00 => direct_mode      		<= Bus2IP_Data(0);
+            when REG_ADDR_01 => display_mode     		<= Bus2IP_Data(1 downto 0);
+            when REG_ADDR_02 => show_frame       		<= Bus2IP_Data(0);
+            when REG_ADDR_03 => font_size        		<= Bus2IP_Data(3 downto 0);
+            when REG_ADDR_04 => foreground_color_1	<= Bus2IP_Data(23 downto 0);
+            when REG_ADDR_05 => foreground_color_2 	<= Bus2IP_Data(23 downto 0);
+			when REG_ADDR_06 => foreground_color_3	<= Bus2IP_Data(23 downto 0);
+            when REG_ADDR_07 => foreground_color_4 	<= Bus2IP_Data(23 downto 0);						
+            when REG_ADDR_08 => background_color 		<= Bus2IP_Data(23 downto 0);
+            when REG_ADDR_09 => frame_color      		<= Bus2IP_Data(23 downto 0);
             when others => null;
           end case;
         end if;
@@ -505,7 +521,10 @@ begin
     -- cfg
     font_size_i        => font_size(3 downto 0),
     show_frame_i       => show_frame,
-    foreground_color_i => foreground_color(23 downto 0),
+    foreground_color_1_i => foreground_color_1,
+    foreground_color_2_i => foreground_color_2,
+    foreground_color_3_i => foreground_color_3,
+    foreground_color_4_i => foreground_color_4,
     background_color_i => background_color(23 downto 0),
     frame_color_i      => frame_color(23 downto 0),
     -- vga
@@ -521,6 +540,7 @@ begin
     blue_o             => blue_o     
   );
   vga_vsync_o <= vga_vsync_s;
+  interrupt_o <= '1' when dir_pixel_row = V_RES else '0';
   
   -- direct mode based on integral pixel row nad column
   dir_green   <= x"FF" when (dir_pixel_row > 200 and dir_pixel_row < 280 and dir_pixel_column > 280 and dir_pixel_column < 360) else x"00";

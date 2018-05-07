@@ -50,7 +50,10 @@ entity vga_top is
     -- cfg
     font_size_i         : in  std_logic_vector(3 downto 0);
     show_frame_i        : in  std_logic;
-    foreground_color_i  : in  std_logic_vector(23 downto 0);
+	foreground_color_1_i: in std_logic_vector(23 downto 0);
+	foreground_color_2_i: in std_logic_vector(23 downto 0);
+	foreground_color_3_i: in std_logic_vector(23 downto 0);
+	foreground_color_4_i: in std_logic_vector(23 downto 0);
     background_color_i  : in  std_logic_vector(23 downto 0);
     frame_color_i       : in  std_logic_vector(23 downto 0);
     -- vga
@@ -168,7 +171,7 @@ architecture rtl of vga_top is
   signal pixel_column_c         : std_logic_vector(11-1 downto 0);
   
   -- char rom
-  signal char_addr_s            : std_logic_vector(TEXT_MEM_DATA_WIDTH-1 downto 0);
+  signal char_addr_s            : std_logic_vector(6-1 downto 0);
   signal font_col_s             : std_logic_vector(2 downto 0);
   signal font_row_s             : std_logic_vector(2 downto 0);
   signal rom_out_s              : std_logic;
@@ -181,9 +184,23 @@ architecture rtl of vga_top is
   signal graph_pixel_addr_s     : std_logic_vector(GRAPH_MEM_ADDR_WIDTH-1 downto 0);
   signal graph_pixel_s          : std_logic;
   signal active_pixel_s         : std_logic;
+  signal color_mux				: std_logic_vector(1 downto 0);
+  signal foreground_color 		: std_logic_vector(23 downto 0);
+  signal char_addr_data_8		: std_logic_vector (7 downto 0);
+
 
 begin
 
+  color_mux 	<= char_addr_data_8(7 downto 6);
+  char_addr_s 	<= char_addr_data_8(5 downto 0);
+  
+  with color_mux select foreground_color <=
+							foreground_color_1_i 	when "00",
+							foreground_color_2_i    when "01",
+							foreground_color_3_i 	when "10",
+							foreground_color_4_i	when others;
+
+  
   vga_i:vga
   generic map(
     RESOLUTION_TYPE => RES_TYPE,
@@ -202,7 +219,7 @@ begin
     -- cfg
     show_frame_i        => show_frame_i,
     active_pixel_i      => active_pixel_s,
-    foreground_color_i  => foreground_color_i,
+    foreground_color_i  => foreground_color,
     background_color_i  => background_color_i,
     frame_color_i       => frame_color_i,
     -- vga
@@ -250,7 +267,7 @@ begin
     wr_data_i => text_data_i,
     we_i      => text_we_i,
     rd_addr_i => txt_ram_addr_s,
-    rd_data_o => char_addr_s
+    rd_data_o => char_addr_data_8
   );
   
   graphics_mem_i:graphics_mem
@@ -294,14 +311,14 @@ begin
                       "0000"   & horizontal_res(horizontal_res'length-1 downto 4) when (font_size_i = 1) else
                       "000"    & horizontal_res(horizontal_res'length-1 downto 3);
   
-  font_row_s <= pixel_row_s(5 downto 3) when (font_size_i = 3) else
-                pixel_row_s(4 downto 2) when (font_size_i = 2) else
-                pixel_row_s(3 downto 1) when (font_size_i = 1) else
-                pixel_row_s(2 downto 0);
+  font_row_s <= pixel_row_s(5 downto 3)-1 when (font_size_i = 3) else
+                pixel_row_s(4 downto 2)-1 when (font_size_i = 2) else
+                pixel_row_s(3 downto 1)-1 when (font_size_i = 1) else
+                pixel_row_s(2 downto 0)-1;
   
-  font_col_s <= pixel_column_s(5 downto 3) when (font_size_i = 3) else
-                pixel_column_s(4 downto 2) when (font_size_i = 2) else
-                pixel_column_s(3 downto 1) when (font_size_i = 1) else
+  font_col_s <= pixel_column_s(5 downto 3)-1 when (font_size_i = 3) else
+                pixel_column_s(4 downto 2)-1 when (font_size_i = 2) else
+                pixel_column_s(3 downto 1)-1 when (font_size_i = 1) else
                 pixel_column_s(2 downto 0)-1;-- because of synchronous memory read there is one cycle delay with char_addr_s, so font_col and font_row should be delayed also
 
   grid_size <= 64 when (font_size_i = 3) else
