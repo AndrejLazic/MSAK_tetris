@@ -138,7 +138,7 @@ entity my_peripheral is
   (
     -- ADD USER PORTS BELOW THIS LINE ------------------
     --USER ports added here
-    LED_Data : out std_logic;
+    LED_Data : out std_logic_vector(7 downto 0);
     DIP_Data : in std_logic_vector(7 downto 0);
     -- ADD USER PORTS ABOVE THIS LINE ------------------
 
