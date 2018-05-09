@@ -423,29 +423,29 @@ int main()
 void drawGameState(){
 	// SCORE
 	set_cursor(9*40 + 4);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_score, 5);
+    print_string(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, 3, s_score, 5);
 
     // NEXT PILL
     set_cursor(9*40 + 32);
-	print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, (newPill[0] & 0x18) >> 3, PILL1);
+	print_char(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, (newPill[0] & 0x18) >> 3, PILL1);
 	set_cursor(9*40 + 33);
-	print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, (newPill[1] & 0x18) >> 3, PILL2);
+	print_char(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, (newPill[1] & 0x18) >> 3, PILL2);
 
 	//LEVEL
 	set_cursor(18*40 + 34);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_lvl, 2);
+    print_string(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, 3, s_lvl, 2);
 
     //SPEED
     set_cursor(20*40 + 34);
 	switch(speed){
-		case LOW:    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_low, 2);break;
-		case MIDDLE: print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_middle, 2);break;
-		case HIGH:   print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_high, 2);break;
+		case LOW:    print_string(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, 3, s_low, 2);break;
+		case MIDDLE: print_string(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, 3, s_middle, 2);break;
+		case HIGH:   print_string(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, 3, s_high, 2);break;
 	}
 
     //VIRUS
 	set_cursor(22*40 + 34);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_nBugs, 2);
+    print_string(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, 3, s_nBugs, 2);
 }
 
 // ------------------------------- DRAWING THE GAME STATIC MESSAGES --------------------------
@@ -453,23 +453,23 @@ void drawGameState(){
 void drawStaticGameMessages(){
 	//SCORE
 	set_cursor(7*40 + 4);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sSCORE, 5);
+    print_string(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, 1, sSCORE, 5);
 
 	// DR MARIO
 	set_cursor(2*40 + 28);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sDR_MARIO, 8);
+    print_string(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, 1, sDR_MARIO, 8);
 
 	// NEXT PILL
     set_cursor(7*40 + 28);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sNEXT_PILL, 9);
+    print_string(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, 1, sNEXT_PILL, 9);
 
 	//LEVEL SPEED VIRUS
 	set_cursor(18*40 + 28);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sLEVEL, 5);
+    print_string(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, 1, sLEVEL, 5);
     set_cursor(20*40 + 28);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sSPEED, 5);
+    print_string(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, 1, sSPEED, 5);
     set_cursor(22*40 + 28);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sVIRUS, 5);
+    print_string(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, 1, sVIRUS, 5);
 
 
 }
@@ -753,7 +753,7 @@ void drawBackground(){
 				case 6: znak = UGAO_GORNJI_DESNI;  break;
 				case 7: znak = UGAO_DONJI_LEVI;    break;
 			}
-			print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
+			print_char(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, boja, znak);
 		}
 }
 
@@ -796,7 +796,7 @@ void drawTable(){
 						}
 						else
 							znak=' ';
-						print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
+						print_char(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR, boja, znak);
 		}
 	}
 
@@ -813,7 +813,7 @@ void initializingPlatform(){
 		xil_printf("\r\nInterrupt controller initialized");
 */
 	// Connect my_timer_interrupt_handler
-	Status = XIntc_Connect (&Intc, XPAR_INTC_0_DEVICE_ID,
+	Status = XIntc_Connect (&Intc, XPAR_AXI_INTC_0_VGA_PERIPH_0_INTERRUPT_O_INTR,
 							(XInterruptHandler) my_timer_interrupt_handler,(void *)0);
 	/*if (Status != XST_SUCCESS)
 		xil_printf ("\r\nRegistering MY_TIMER Interrupt Failed");
@@ -823,23 +823,23 @@ void initializingPlatform(){
 	//start the interrupt controller in real mode
 	Status = XIntc_Start(&Intc, XIN_REAL_MODE);
 	//enable interrupt controller
-	XIntc_Enable (&Intc, XPAR_INTC_0_DEVICE_ID);
+	XIntc_Enable (&Intc, XPAR_AXI_INTC_0_VGA_PERIPH_0_INTERRUPT_O_INTR);
 	microblaze_enable_interrupts();
 
-    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x00, 0x0);// direct mode   0
-    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x04, 0x3);// display_mode  1
-    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x08, 0x1);// show frame      2
-    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x0C, 0x1);// font size       3
-    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x10, 0x2D1E4B);// foreground 4 tamno ljubicasta/plava 0xFF0000-crvena
-    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x14, 0x00FF00);// foreground 4 green
-    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x18, 0x0000FF);// foreground 4 plava
-    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x1c, 0xffff00);// foreground 4 zuta
-    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x20, 0x000000);// background color crna
-    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x24, 0xFF0000);// frame color      6
+    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x00, 0x0);// direct mode   0
+    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x04, 0x3);// display_mode  1
+    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x08, 0x1);// show frame      2
+    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x0C, 0x1);// font size       3
+    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x10, 0x2D1E4B);// foreground 4 tamno ljubicasta/plava 0xFF0000-crvena
+    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x14, 0x00FF00);// foreground 4 green
+    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x18, 0x0000FF);// foreground 4 plava
+    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x1c, 0xffff00);// foreground 4 zuta
+    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x20, 0x000000);// background color crna
+    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x24, 0xFF0000);// frame color      6
 
     //xil_printf("\n Dr. Mario starting\n\r");
     //TODO Debug.
-    clear_text_screen(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
-    clear_graphics_screen(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
+    clear_text_screen(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR);
+    clear_graphics_screen(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR);
 
 }

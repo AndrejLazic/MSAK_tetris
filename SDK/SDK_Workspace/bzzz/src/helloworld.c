@@ -93,7 +93,6 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 
 void print(char *str);
 
-#define XPAR_INTC_0_BUZZER_PER_0_VEC_ID 0
 
 int main()
 {
@@ -130,7 +129,7 @@ int main()
 		  xil_printf("\r\nInterrupt controller initialized");
 
 	  // Connect my_timer_interrupt_handler
-	  Status = XIntc_Connect (&Intc, XPAR_INTC_0_BUZZER_PER_0_VEC_ID,
+	  Status = XIntc_Connect (&Intc, XPAR_AXI_INTC_0_BUZZER_PER_0_MY_TIMER_IRQ_INTR,
 			  (XInterruptHandler) my_timer_interrupt_handler,(void *)0);
 	  if (Status != XST_SUCCESS)
 		  xil_printf ("\r\nRegistering MY_TIMER Interrupt Failed");
@@ -139,7 +138,7 @@ int main()
 	   //start the interrupt controller in real mode
 	   Status = XIntc_Start(&Intc, XIN_REAL_MODE);
 	   //enable interrupt controller
-	   XIntc_Enable (&Intc, XPAR_INTC_0_BUZZER_PER_0_VEC_ID);
+	   XIntc_Enable (&Intc, XPAR_AXI_INTC_0_BUZZER_PER_0_MY_TIMER_IRQ_INTR);
 	   microblaze_enable_interrupts();
 
 	   while (1){
