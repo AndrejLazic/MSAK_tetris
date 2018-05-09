@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>test</name>
+	<name>dr_mario</name>
 	<comment>standalone_bsp_0 - microblaze_0</comment>
 	<projects>
 		<project>standalone_bsp_0</project>
