@@ -163,7 +163,7 @@ BEGIN axi_intc
  BUS_INTERFACE S_AXI = axi4lite_0
  BUS_INTERFACE INTERRUPT = axi_intc_0_INTERRUPT
  PORT S_AXI_ACLK = clk_100_0000MHz
- PORT Intr = buzzer_per_0_my_timer_irq
+ PORT Intr = buzzer_per_0_my_timer_irq & vga_periph_0_interrupt_o
 END
 
 BEGIN my_peripheral
@@ -206,5 +206,6 @@ BEGIN vga_periph_mem
  PORT red_o = vga_periph_0_red_o
  PORT green_o = vga_periph_0_green_o
  PORT blue_o = vga_periph_0_blue_o
+ PORT interrupt_o = vga_periph_0_interrupt_o
 END
 

@@ -38,9 +38,9 @@ ARCHITECTURE Behavioral OF char_rom IS
 
 
 COMPONENT char_rom_def IS PORT (
-                                clk  : IN  STD_LOGIC;                         -- takt
-                                addr : IN  STD_LOGIC_VECTOR(8 DOWNTO 0);      -- adresa znaka
-                                dout : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)       -- izlaz
+                                clka  : IN  STD_LOGIC;                         -- takt
+                                addra : IN  STD_LOGIC_VECTOR(8 DOWNTO 0);      -- adresa znaka
+                                douta : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)       -- izlaz
                                );
 END COMPONENT;
 
@@ -50,9 +50,9 @@ BEGIN
 -- Oblici znakova se nalaze u datoteci char_rom_def_mem.coe
 
 BRAM_MEM_I: char_rom_def PORT MAP (
-                                   clk  => clk_i      ,
-                                   addr => rom_address,
-                                   dout => rom_data
+                                   clka  => clk_i      ,
+                                   addra => rom_address,
+                                   douta => rom_data
                                   );
 
                   ------------------|----------
