@@ -78,10 +78,8 @@ begin
   DP_RD_GRAPHICS_MEM : process (rd_clk_i) begin
     if (rising_edge(rd_clk_i)) then
       rd_value <= graphics_mem(conv_integer(index_0));
-      --rd_addr <= rd_addr_i;
     end if;
   end process;
-  --rd_value <= graphics_mem(conv_integer(rd_addr));
   rd_data_o <= rd_value(conv_integer(index_1));
   
   index_0_t <= conv_integer(mem_up_addr);

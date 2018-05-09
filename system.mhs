@@ -29,8 +29,7 @@
  PORT vga_periph_0_red_o_pin = vga_periph_0_red_o, DIR = O, VEC = [7:0]
  PORT vga_periph_0_green_o_pin = vga_periph_0_green_o, DIR = O, VEC = [7:0]
  PORT vga_periph_0_blue_o_pin = vga_periph_0_blue_o, DIR = O, VEC = [7:0]
- PORT vga_periph_0_interrupt_o_pin = vga_periph_0_interrupt_o, DIR = O, SIGIS = INTERRUPT, SENSITIVITY = EDGE_RISING
- PORT my_peripheral_0_LED_Data_pin = my_peripheral_0_LED_Data, DIR = O
+ PORT my_peripheral_0_LED_Data_pin = my_peripheral_0_LED_Data, DIR = O, VEC = [7:0]
 
 
 # PORT vga_periph_0_display_mode_i_pin = vga_periph_0_display_mode_i, DIR = I, VEC = [1:0]
@@ -207,6 +206,5 @@ BEGIN vga_periph_mem
  PORT red_o = vga_periph_0_red_o
  PORT green_o = vga_periph_0_green_o
  PORT blue_o = vga_periph_0_blue_o
- PORT interrupt_o = vga_periph_0_interrupt_o
 END
 
