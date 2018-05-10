@@ -10,7 +10,7 @@ lib vga_periph_mem_v1_00_a user_logic vhdl
 lib vga_periph_mem_v1_00_a vga_periph_mem vhdl
 
 lib vga_periph_mem_v1_00_a char_rom       vhdl
-#lib vga_periph_mem_v1_00_a char_rom_def   vhdl
+lib vga_periph_mem_v1_00_a char_rom_def   vhdl
 lib vga_periph_mem_v1_00_a dcm108MHz      vhdl
 lib vga_periph_mem_v1_00_a dcm25MHz       vhdl
 lib vga_periph_mem_v1_00_a dcm50MHz       vhdl
