@@ -38,6 +38,7 @@ architecture arc_text_mem of text_mem is
 
   signal index_t : natural;
   signal index   : natural;
+  signal index_d1: natural;
 
   signal text_mem : t_text_mem := (
           0 => "00001100", -- l = 0x0C
@@ -56,6 +57,12 @@ begin
       if (we_i = '1') then
         text_mem(conv_integer(wr_addr_i)) <= wr_data_i; -- update img_mem from out_mem
       end if;
+    end if;
+  end process;
+  
+  DP_DELAY_INDEX : process (rd_clk_i) begin
+    if (rising_edge(rd_clk_i)) then
+      index_d1 <= index;
     end if;
   end process;
   
