@@ -823,7 +823,7 @@ void initializingPlatform(){
 	//start the interrupt controller in real mode
 	Status = XIntc_Start(&Intc, XIN_REAL_MODE);
 	//enable interrupt controller
-	XIntc_Enable (&Intc, XPAR_AXI_INTC_0_VGA_PERIPH_0_INTERRUPT_O_INTR);
+	XIntc_Enable (&Intc, XPAR_INTC_0_DEVICE_ID);
 	microblaze_enable_interrupts();
 
     VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x00, 0x0);// direct mode   0
@@ -834,7 +834,7 @@ void initializingPlatform(){
     VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x14, 0x00FF00);// foreground 4 green
     VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x18, 0x0000FF);// foreground 4 plava
     VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x1c, 0xffff00);// foreground 4 zuta
-    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x20, 0x000000);// background color crna
+    VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x20, 0x00FF00);// background color crna
     VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_0_S_AXI_MEM0_BASEADDR + 0x24, 0xFF0000);// frame color      6
 
     //xil_printf("\n Dr. Mario starting\n\r");
