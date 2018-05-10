@@ -196,7 +196,7 @@ BEGIN vga_periph_mem
  BUS_INTERFACE S_AXI = axi4lite_0
  PORT S_AXI_ACLK = clk_100_0000MHz
  PORT clk_i = vga_periph_0_clk_i
- PORT reset_n_i = vga_periph_0_reset_n_i
+ PORT reset_n_i = net_vcc
  PORT vga_hsync_o = vga_periph_0_vga_hsync_o
  PORT vga_vsync_o = vga_periph_0_vga_vsync_o
  PORT blank_o = vga_periph_0_blank_o
