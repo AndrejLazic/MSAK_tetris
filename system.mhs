@@ -28,6 +28,7 @@
  PORT vga_periph_0_red_o_pin = vga_periph_0_red_o, DIR = O, VEC = [7:0]
  PORT vga_periph_0_green_o_pin = vga_periph_0_green_o, DIR = O, VEC = [7:0]
  PORT vga_periph_0_blue_o_pin = vga_periph_0_blue_o, DIR = O, VEC = [7:0]
+ PORT buzzer_per_0_out_pwm_pin = buzzer_per_0_out_pwm, DIR = O
 
 
 # PORT vga_periph_0_display_mode_i_pin = vga_periph_0_display_mode_i, DIR = I, VEC = [1:0]
@@ -199,5 +200,16 @@ BEGIN axi_intc
  BUS_INTERFACE INTERRUPT = axi_intc_0_INTERRUPT
  PORT S_AXI_ACLK = clk_100_0000MHz
  PORT Intr = vga_periph_mem_0_interrupt_o
+END
+
+BEGIN buzzer_per
+ PARAMETER INSTANCE = buzzer_per_0
+ PARAMETER HW_VER = 1.00.b
+ PARAMETER C_BASEADDR = 0x79c00000
+ PARAMETER C_HIGHADDR = 0x79c0ffff
+ BUS_INTERFACE S_AXI = axi4lite_0
+ PORT S_AXI_ACLK = clk_100_0000MHz
+ PORT out_pwm = buzzer_per_0_out_pwm
+ PORT my_timer_irq = buzzer_per_0_my_timer_irq
 END
 
