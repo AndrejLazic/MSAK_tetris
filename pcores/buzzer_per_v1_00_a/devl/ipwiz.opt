@@ -1,9 +1,0 @@
--batch 
--create buzzer_per 
--ver 1.00.a 
--dir "C:\Users\student\Downloads\lab5-master\lab5-master" 
--lang vhdl 
--bus axi4lite s 
--reg 8 
--xps 
--driver 

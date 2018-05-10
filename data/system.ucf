@@ -13,14 +13,7 @@ NET RESET LOC = "AE24"  |  IOSTANDARD = "LVCMOS33"  |  TIG;
 NET CLK_N LOC = "AF14"  |  IOSTANDARD = "LVDS_33";
 NET CLK_P LOC = "AD14"  |  IOSTANDARD = "LVDS_33";
 
-#NET buzzer_per_0_out_pwm_pin LOC = "N24"  |  IOSTANDARD = "LVCMOS33";
 NET buzzer_per_0_out_pwm_pin LOC = "C5"  |  IOSTANDARD = "LVCMOS33";
-
-
-NET RS232_RX_pin LOC = "A21"  |  IOSTANDARD = "LVCMOS33";
-NET RS232_TX_pin LOC = "A20"  |  IOSTANDARD = "LVCMOS33";
-
-
 NET my_peripheral_0_DIP_Data_pin[0] LOC = "AC24"  |  IOSTANDARD = "LVCMOS33";
 NET my_peripheral_0_DIP_Data_pin[1] LOC = "AC23"  |  IOSTANDARD = "LVCMOS33";
 NET my_peripheral_0_DIP_Data_pin[2] LOC = "AB24"  |  IOSTANDARD = "LVCMOS33";
@@ -39,8 +32,10 @@ NET my_peripheral_0_LED_Data_pin[5] LOC = "K24"  |  IOSTANDARD = "LVCMOS33";
 NET my_peripheral_0_LED_Data_pin[6] LOC = "H24"  |  IOSTANDARD = "LVCMOS33";
 NET my_peripheral_0_LED_Data_pin[7] LOC = "D24"  |  IOSTANDARD = "LVCMOS33";
 
+NET RS232_Uart_1_sin LOC = "A21"  |  IOSTANDARD = "LVCMOS33";
+NET RS232_Uart_1_sout LOC = "A20"  |  IOSTANDARD = "LVCMOS33";
 
-NET vga_periph_0_clk_i_pin             LOC = M21 | IOSTANDARD = LVTTL;
+NET vga_periph_0_clk_i_pin             LOC = m21 | IOSTANDARD = LVTTL;
 #NET vga_periph_0_reset_n_i_pin         LOC = AE24 | IOSTANDARD = LVCMOS33; # AKA UI_JOY2
 
 NET vga_periph_0_clk_i_pin TNM_NET = clk_i;

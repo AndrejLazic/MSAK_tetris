@@ -104,6 +104,6 @@ _ngo/
 *_par.xrpt
 *_xst.xrpt
 xlnx_auto_0_xdb/
-!char_rom_def.ngc
 
-!midi_piezo_buzzer.bit
+!/pcores/*/netlist/*.ngc
+!/Docs/*.*
