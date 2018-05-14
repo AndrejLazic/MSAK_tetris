@@ -17,10 +17,20 @@ void set_cursor(Xuint32 new_value){
 	cursor_position = new_value;
 }
 
+void test_char_rom(Xuint32 BaseAddress){
+	int i;
+	u16 c;
+	for (i = 0; i < 4800; i++){
+		c = i % 256;
+		VGA_PERIPH_MEM_mWriteMemory(BaseAddress + TEXT_MEM_OFF + i*4, c);
+	}
+}
+
 void clear_text_screen(Xuint32 BaseAddress){
 	int i;
+	u8 c = 0; // Empty.
 	for (i = 0; i < 4800; i++){
-		VGA_PERIPH_MEM_mWriteMemory(BaseAddress + TEXT_MEM_OFF + i*4, 0x20);
+		VGA_PERIPH_MEM_mWriteMemory(BaseAddress + TEXT_MEM_OFF + i*4, c);
 	}
 }
 

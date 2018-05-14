@@ -202,6 +202,12 @@ int main()
 	//----------------------------Initializing platform-------------------------------------
 	initializingPlatform();
 
+	// For testing.
+#if 1
+	test_char_rom(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
+	return 0;
+#endif
+
 
 	srand(interruptBrojac);
 	//============================Infinite loop for game==================================

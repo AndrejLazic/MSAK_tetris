@@ -70,6 +70,8 @@ XStatus VGA_PERIPH_MEM_SelfTest(void * baseaddr_p);
 
 void set_cursor(Xuint32 new_value);
 
+void test_char_rom(Xuint32 BaseAddress);
+
 void clear_graphics_screen(Xuint32 BaseAddress);
 void clear_text_screen(Xuint32 BaseAddress);
 
