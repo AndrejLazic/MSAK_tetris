@@ -23,12 +23,12 @@
 #define UGAO_DONJI_LEVI		0x2F
 #define UGAO_DONJI_DESNI	0x3A
 #define BACKGROUND_ZNAK		0x00
-#define PILL1				0x23
-#define PILL2				0x24
-#define PILL3				0x25
-#define PILL4				0x26
-#define PILL5				0x21
-#define PILL6				0x22
+#define PILL1				0x1B
+#define PILL2				0x1B
+#define PILL3				0x1B
+#define PILL4				0x1B
+#define PILL5				0x1B
+#define PILL6				0x1B
 #define VIRUS1				0x27
 #define VIRUS2				0x29
 #define VIRUS3				0x2B
@@ -439,8 +439,8 @@ void drawGameState(){
    // NEXT PILL
     set_cursor(14*40 + 17);
 	print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, (newPill[0] & 0x18) >> 3, PILL1);
-	set_cursor(14*40 + 18);
-	print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, (newPill[1] & 0x18) >> 3, PILL2);
+	//set_cursor(14*40 + 18);
+	//print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, (newPill[1] & 0x18) >> 3, PILL2);
 
 	//LEVEL
 	set_cursor(28*40 + 17);
