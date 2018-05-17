@@ -102,6 +102,48 @@ const unsigned char backround[30][40]={
 
 };
 
+
+
+unsigned char table1[16][8] = {
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,2,    0,0,0,0},
+	{0,0,2,2,    2,0,0,0},
+
+};
+
+unsigned char table2[16][8] = {
+	{0,0,2,2,    2,0,0,0},
+	{0,0,0,2,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+
+};
+
 	unsigned long interruptBrojac;
 	unsigned long interruptAnim;
     unsigned int lvl; 	// 0d 0 do 20
@@ -149,6 +191,7 @@ const unsigned char backround[30][40]={
 
 
 //void print(char *str);
+void drawMap();
 void creatingCurrentNextPills();
 void clearTable();
 void fillTableWBugs();
@@ -169,7 +212,8 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 	//drawing screen and counting interrupts
 	interruptAnim++;
 	interruptBrojac++;
-	drawTable();
+	//drawTable();
+	//drawMap();
 	drawGameState();
 }
 
@@ -204,9 +248,27 @@ int main()
 	initializingPlatform();
 
 
+	drawBackground();
+	drawStaticGameMessages();
+	//drawMap();
+	int k = 0,m;
+	Xuint32 addr=XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR;
+	//for (k=0;k<4;k++){
+	//provera za klik
+	//obrises for
+	//ako je desno pritisnuto ides prethodna+addr+4
+
+	//k++;
+
+	drawShape(addr);
+
+	k++;
+	drawShape(addr + k*8*39);
 
 
-	srand(interruptBrojac);
+	//drawShape();
+
+	/*srand(interruptBrojac);
 	//============================Infinite loop for game==================================
 	while (1){
 		prekidac = Xil_In8(XPAR_MY_PERIPHERAL_0_BASEADDR);//iscitavanje prekidaca
@@ -376,13 +438,13 @@ int main()
 													palo++;
 												}
 										break;
-								/*case 2: xil_printf("\n stanje SREDJIVANJE_PADANJE - mozda greska- case 2: "
+								// ovde je bio komentar case 2: xil_printf("\n stanje SREDJIVANJE_PADANJE - mozda greska- case 2: "
 										   	   	   "ovaj se sa case1 trebao pasti ili ispod prvog ima nesto\n\r");
 										break;
 								case 3: xil_printf("\n stanje SREDJIVANJE_PADANJE - greska- case 3: "
 												   "nije ponisten ili padanje nesredjuje dobro\n\r");
 										break;
-										*/
+
 								case 4: table[y+1][x] 	= table[y][x];
 										table[y][x]		= table[y-1][x];
 										table[y-1][x] 	= 0x00;
@@ -419,11 +481,75 @@ int main()
 			animatedV=!animatedV;
 			interruptAnim = 0;
 		}
-	}
+	}*/
 
     cleanup_platform();
     return 0;
 }
+
+
+
+
+
+void drawMap(){
+
+	for(y = POCETAK_TABLE_Y; y < POCETAK_TABLE_Y + MAX_TABLE_Y ; y++){
+			for(x = POCETAK_TABLE_X; x < POCETAK_TABLE_X + MAX_TABLE_X; x++){
+				set_cursor(y*40+x);
+				boja = 2;
+				switch(table1[y - POCETAK_TABLE_Y][x - POCETAK_TABLE_X]){
+					case 0: znak = BACKGROUND_ZNAK;    break;
+					//case 1: znak = BACKGROUND_ZNAK;    break;
+					case 2: znak = ZNAK_KOCKICA   ;    break;
+				}
+				print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
+			}
+
+
+	}
+}
+
+/*
+void drawShape(){
+
+	int brojac = 0;
+	boja = 2;
+	for(y = POCETAK_TABLE_Y; y < POCETAK_TABLE_Y + MAX_TABLE_Y ; y++){
+		for(x = POCETAK_TABLE_X; x < POCETAK_TABLE_X + MAX_TABLE_X; x++){
+			set_cursor(y*40+x);
+				if (table2[y - POCETAK_TABLE_Y][x - POCETAK_TABLE_X] == 2){
+					print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, ZNAK_KOCKICA);
+					brojac++;
+					}
+					if (brojac == 4)
+						break;
+					}
+
+				}
+		}
+*/
+
+void drawShape(Xuint32 addr){
+
+	int brojac = 0;
+	boja = 2;
+	for(y = POCETAK_TABLE_Y; y < POCETAK_TABLE_Y + MAX_TABLE_Y ; y++){
+		for(x = POCETAK_TABLE_X; x < POCETAK_TABLE_X + MAX_TABLE_X; x++){
+			set_cursor(y*40+x);
+				if (table2[y - POCETAK_TABLE_Y][x - POCETAK_TABLE_X] == 2){
+					print_char(addr, boja, ZNAK_KOCKICA);
+					brojac++;
+					}
+					if (brojac == 4)
+						break;
+					}
+
+				}
+		}
+
+
+
+
 
 // ----------------------------------- CURRENT GAME STATISTICS -------------------------------
 // it draws game statistic: current level, number of viruses, current game speed and current score
@@ -688,7 +814,7 @@ void creatingCurrentNextPills(){
 
 // ----------------------------------  CREATING NEW PILL AND UPDATING CURRENT ONE ---------------------
 // called whenever it needs to place pill in the game table and create new pill
-void newPillF(){
+/*void newPillF(){
 	if( (!table[0][3]) || (!table[0][4])){
 		currentPill[0]	= newPill[0];
 		currentPill[1]	= newPill[1];
@@ -702,7 +828,7 @@ void newPillF(){
 	}
 	else
 		stanje = KRAJ;
-}
+}*/
 
 // ---------------------------------- CLEARING THE GAME TABLE --------------------------------------
 // clearing the game table and preparing the table for game start
@@ -716,7 +842,7 @@ void clearTable(){
 
 // ------------------------------- FILLING THE GAME TABLE WITH VIRUSES 	-------------------------
 //called only on different level start, it create viruses on the game table
-void fillTableWBugs(){
+/*void fillTableWBugs(){
 
 	int i;
 	int iStart;
@@ -743,7 +869,7 @@ void fillTableWBugs(){
 				(i==MAX_TABLE) ? i = iStart: i++;
 		}while(!nasao);
 	}
-}
+}*/
 
 // -------------------------- DRAWING BACKGROUND -----------------------------------------
 // drawing game background, it get called only once in begginning of the game
