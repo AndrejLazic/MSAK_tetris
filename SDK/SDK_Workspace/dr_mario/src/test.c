@@ -7,6 +7,8 @@
 #include "xil_exception.h"
 #include "xintc.h"
 #include <math.h>
+#include <stdbool.h>
+
 
 #define VIRUS_PROSTOR   104
 #define VIRUS_PROSTOR_Y   4
@@ -104,7 +106,7 @@ const unsigned char backround[30][40]={
 
 
 
-unsigned char table1[16][8] = {
+u8 table1[16][8] = {
 	{0,0,0,0,    0,0,0,0},
 	{0,0,0,0,    0,0,0,0},
 	{0,0,0,0,    0,0,0,0},
@@ -124,7 +126,7 @@ unsigned char table1[16][8] = {
 
 };
 
-unsigned char table2[16][8] = {
+u8 table2[16][8] = {
 	{0,0,2,2,    2,0,0,0},
 	{0,0,0,2,    0,0,0,0},
 	{0,0,0,0,    0,0,0,0},
@@ -191,12 +193,12 @@ unsigned char table2[16][8] = {
 
 
 //void print(char *str);
+void drawTable(u8 table[16][8], int table_x, int table_y);
 void drawMap();
 void creatingCurrentNextPills();
 void clearTable();
 void fillTableWBugs();
 void newPillF();
-void drawTable();
 void drawBackground();
 void initializingPlatform();
 void clearingPill6();
@@ -207,13 +209,16 @@ unsigned char proveraDole(unsigned char kordY,unsigned char kordX, unsigned char
 unsigned char proveraDesno(unsigned char kordY,unsigned char kordX, unsigned char bojaProvere);
 void ponistavanje(unsigned char kordYp, unsigned char kordXp, unsigned char kordYk, unsigned char kordXk);
 
+typedef enum {P_O, P_I, P_S, P_Z, P_L, P_J, P_T} pieces_t;
+typedef enum {R_0, R_1, R_2, R_3} rotation_t;
+void drawPeaces(void);
 
 void my_timer_interrupt_handler(void * baseaddr_p) {
 	//drawing screen and counting interrupts
 	interruptAnim++;
 	interruptBrojac++;
-	//drawTable();
-	//drawMap();
+	drawMap();
+	drawPeaces();
 	drawGameState();
 }
 
@@ -260,10 +265,9 @@ int main()
 
 	//k++;
 
-	drawShape(addr);
 
-	k++;
-	drawShape(addr + k*8*39);
+	//k++;
+	//drawShape(addr + k*8*39);
 
 
 	//drawShape();
@@ -487,26 +491,29 @@ int main()
     return 0;
 }
 
+void drawSign(int x, int y, int boja, int znak){
+	set_cursor(y*40+x);
+	print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
+}
 
 
+void drawTable(u8 table[16][8], int table_x, int table_y){
+	for(int y = 0; y < 16 ; y++){
+		int out_y = y + table_y;
+			for(int x = 0; x < 8; x++){
+				int out_x = x + table_x;
+				switch(table[y][x]){
+					case 0: drawSign(out_x, out_y, 2, BACKGROUND_ZNAK);    break;
+					case 2: drawSign(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
+				}
+			}
+	}
+}
 
 
 void drawMap(){
-
-	for(y = POCETAK_TABLE_Y; y < POCETAK_TABLE_Y + MAX_TABLE_Y ; y++){
-			for(x = POCETAK_TABLE_X; x < POCETAK_TABLE_X + MAX_TABLE_X; x++){
-				set_cursor(y*40+x);
-				boja = 2;
-				switch(table1[y - POCETAK_TABLE_Y][x - POCETAK_TABLE_X]){
-					case 0: znak = BACKGROUND_ZNAK;    break;
-					//case 1: znak = BACKGROUND_ZNAK;    break;
-					case 2: znak = ZNAK_KOCKICA   ;    break;
-				}
-				print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
-			}
-
-
-	}
+	drawTable(table1, 6, 6);
+	drawTable(table2, 6+8+12, 6);
 }
 
 /*
@@ -529,25 +536,46 @@ void drawShape(){
 		}
 */
 
-void drawShape(Xuint32 addr){
+void drawPeace(int table_x, int table_y, int x, int y, pieces_t piece, rotation_t rot) {
+	int boja = 3;
+	x += table_x;
+	y += table_y;
+	drawSign(10, 10, 3, ZNAK_KOCKICA);
+
+	switch (piece) {
+	case P_O:
+		//drawSign(x, y, boja, ZNAK_KOCKICA);
+		//drawSign(x-1, y+0, boja, ZNAK_KOCKICA);
+		//drawSign(x-0, y+1, boja, ZNAK_KOCKICA);
+		break;
+
+	}
+}
+
+void drawPeaces(void) {
+	drawPeace(6, 6, 4, 4, P_O, R_0);
+}
+
+/*
+void drawShape(Xuint32 addr) {
 
 	int brojac = 0;
 	boja = 2;
-	for(y = POCETAK_TABLE_Y; y < POCETAK_TABLE_Y + MAX_TABLE_Y ; y++){
-		for(x = POCETAK_TABLE_X; x < POCETAK_TABLE_X + MAX_TABLE_X; x++){
-			set_cursor(y*40+x);
-				if (table2[y - POCETAK_TABLE_Y][x - POCETAK_TABLE_X] == 2){
-					print_char(addr, boja, ZNAK_KOCKICA);
-					brojac++;
-					}
-					if (brojac == 4)
-						break;
-					}
-
-				}
+	for (y = POCETAK_TABLE_Y; y < POCETAK_TABLE_Y + MAX_TABLE_Y; y++) {
+		for (x = POCETAK_TABLE_X; x < POCETAK_TABLE_X + MAX_TABLE_X; x++) {
+			set_cursor(y * 40 + x);
+			if (table2[y - POCETAK_TABLE_Y][x - POCETAK_TABLE_X] == 2) {
+				print_char(addr, boja, ZNAK_KOCKICA);
+				brojac++;
+			}
+			if (brojac == 4)
+				break;
 		}
 
+	}
+}
 
+*/
 
 
 
@@ -894,72 +922,11 @@ void drawBackground(){
 
 // ---------------------------  DRAWING GAME TABLE ---------------------------------------
 // on every interrupt call entire game table is drawn
-void drawTable(){
-	for(y=POCETAK_TABLE_Y; y<POCETAK_TABLE_Y + MAX_TABLE_Y; y++){
-		for(x=POCETAK_TABLE_X;x<POCETAK_TABLE_X + MAX_TABLE_X; x++){
-					    set_cursor(y*40+x);
-						boja = table[y - POCETAK_TABLE_Y][x - POCETAK_TABLE_X] & 0x18;
-						pill = table[y - POCETAK_TABLE_Y][x - POCETAK_TABLE_X] & 0x7;
-						boja = boja >> 3;
-						if(boja){
-							if(pill){
-								switch (pill){
-									case 1: znak = PILL1; break;
-									case 2: znak = PILL2; break;
-									case 3: znak = PILL3; break;
-									case 4: znak = PILL4; break;
-									case 5: znak = PILL5; break;
-									case 6: znak = PILL6; break;
-								}
-							}
-							else{
-								if(animatedV){
-									switch (boja){
-										case 1: znak = ANIM_VIRUS1; break;
-										case 2: znak = ANIM_VIRUS2; break;
-										case 3: znak = ANIM_VIRUS3; break;
-									}
-								}
-								else{
-									switch (boja){
-										case 1: znak = VIRUS1; break;
-										case 2: znak = VIRUS2; break;
-										case 3: znak = VIRUS3; break;
-									}
-								}
-							}
-						}
-						else
-							znak= BACKGROUND_ZNAK; // ovdje je bio razmak
-						print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
-		}
-	}
 
-}
 
 // ------------------------- INITIALIZING PLATFORM  -------------------------------------------------
 void initializingPlatform(){
     init_platform();
-
-	Status = XIntc_Initialize (&Intc, XPAR_INTC_0_DEVICE_ID);
-/*	if (Status != XST_SUCCESS)
-		xil_printf ("\r\nInterrupt controller initialization failure");
-	else
-		xil_printf("\r\nInterrupt controller initialized");
-*/
-	// Connect my_timer_interrupt_handler
-	Status = XIntc_Connect (&Intc, XPAR_INTC_0_DEVICE_ID,
-							(XInterruptHandler) my_timer_interrupt_handler,(void *)0);
-	/*if (Status != XST_SUCCESS)
-		xil_printf ("\r\nRegistering MY_TIMER Interrupt Failed");
-	else
-		xil_printf("\r\nMY_TIMER Interrupt registered");
-*/
-	//start the interrupt controller in real mode
-	Status = XIntc_Start(&Intc, XIN_REAL_MODE);
-	//enable interrupt controller
-	XIntc_Enable (&Intc, XPAR_INTC_0_DEVICE_ID);
-	microblaze_enable_interrupts();
 
     VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x00, 0x0);// direct mode   0
     VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x04, 0x3);// display_mode  1
@@ -976,5 +943,28 @@ void initializingPlatform(){
     //TODO Debug.
     clear_text_screen(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
     clear_graphics_screen(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
+
+
+	Status = XIntc_Initialize (&Intc, XPAR_INTC_0_DEVICE_ID);
+/*	if (Status != XST_SUCCESS)
+		xil_printf ("\r\nInterrupt controller initialization failure");
+	else
+		xil_printf("\r\nInterrupt controller initialized");
+*/
+	// Connect my_timer_interrupt_handler
+	Status = XIntc_Connect (&Intc, 0,
+							(XInterruptHandler) my_timer_interrupt_handler,(void *)0);
+	/*if (Status != XST_SUCCESS)
+		xil_printf ("\r\nRegistering MY_TIMER Interrupt Failed");
+	else
+		xil_printf("\r\nMY_TIMER Interrupt registered");
+*/
+	//start the interrupt controller in real mode
+	Status = XIntc_Start(&Intc, XIN_REAL_MODE);
+	//enable interrupt controller
+	XIntc_Enable (&Intc, XPAR_INTC_0_DEVICE_ID);
+	//XPAR_VGA_PERIPH_MEM_0_INTERRUPT_O_MASK
+	//XPAR_AXI_INTC_0_VGA_PERIPH_MEM_0_INTERRUPT_O_INTR
+	microblaze_enable_interrupts();
 
 }
