@@ -9,12 +9,9 @@
 #include <math.h>
 #include <stdbool.h>
 
+#define TEST_MODE 0
 
-#define VIRUS_PROSTOR   104
-#define VIRUS_PROSTOR_Y   4
-#define MAX_TABLE_X 	  8
-#define MAX_TABLE_Y		 16
-#define MAX_TABLE 		128
+
 
 
 #define ZNAK_KOCKICA        0x1B
@@ -90,6 +87,27 @@ const unsigned char backround[30][40]={
 };
 
 
+u8 landed[16][8] = {
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+
+};
+
+
 
 u8 table1[16][8] = {
 	{0,0,0,0,    0,0,0,0},
@@ -160,52 +178,243 @@ void drawTable(u8 table[16][8], int table_x, int table_y){
 	}
 }
 
+void fallingBlocks(){
+	int x = 6;
+	int y = 6;
+	int boja = 3;
+	print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, ZNAK_KOCKICA);
+	while (1){
+
+		if (x < 14){
+			x++;
+		}
+		else
+		{
+			if ( y < 22 )
+			{
+				y++;
+			}else
+			{
+				y = 6;
+			}
+		}
+		set_cursor(y*40 + x);
+		print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, ZNAK_KOCKICA);
+
+	}
+
+}
+
 
 void drawMap(){
 	drawTable(table1, 6, 6);
 	drawTable(table2, 6+8+12, 6);
 }
 
-/*
-void drawShape(){
+void falling2(){
+	int x = 6;
+	int y = 26;
+	while(1){
+		drawTable(table2, y,x);
+		set_cursor(y*40 + x +160);
+		x++;
+		y++;
+		for (int i =0; i < 10000; i++){}
 
-	int brojac = 0;
-	boja = 2;
-	for(y = POCETAK_TABLE_Y; y < POCETAK_TABLE_Y + MAX_TABLE_Y ; y++){
-		for(x = POCETAK_TABLE_X; x < POCETAK_TABLE_X + MAX_TABLE_X; x++){
-			set_cursor(y*40+x);
-				if (table2[y - POCETAK_TABLE_Y][x - POCETAK_TABLE_X] == 2){
-					print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, ZNAK_KOCKICA);
-					brojac++;
-					}
-					if (brojac == 4)
-						break;
-					}
+	}
 
-				}
-		}
-*/
+
+}
 
 void drawPeace(int table_x, int table_y, int x, int y, pieces_t piece, rotation_t rot) {
 	int boja = 3;
 	x += table_x;
 	y += table_y;
-	drawSign(10, 10, 3, ZNAK_KOCKICA);
 
 	switch (piece) {
 	case P_O:
-		//drawSign(x, y, boja, ZNAK_KOCKICA);
-		//drawSign(x-1, y+0, boja, ZNAK_KOCKICA);
-		//drawSign(x-0, y+1, boja, ZNAK_KOCKICA);
+		drawSign(x, y, boja, ZNAK_KOCKICA);
+		drawSign(x-1, y, boja, ZNAK_KOCKICA);
+		drawSign(x, y-1, boja, ZNAK_KOCKICA);
+		drawSign(x-1, y-1, boja, ZNAK_KOCKICA);
 		break;
+
+	case P_I:
+		switch(rot){
+		case R_0:
+			drawSign(x-2, y, boja, ZNAK_KOCKICA);
+			drawSign(x-1, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y, boja, ZNAK_KOCKICA);
+			break;
+		case R_1:
+			drawSign(x, y-2, boja, ZNAK_KOCKICA);
+			drawSign(x, y-1, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y+1, boja, ZNAK_KOCKICA);
+			break;
+		}
+		break;
+
+
+	case P_Z:
+		switch(rot){
+		case R_0:
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y-1, boja, ZNAK_KOCKICA);
+			drawSign(x-1, y-1, boja, ZNAK_KOCKICA);
+			break;
+		case R_1:
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y+1, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y-1, boja, ZNAK_KOCKICA);
+			break;
+		}
+		break;
+
+	case P_S:
+		switch(rot){
+		case R_0:
+			drawSign(x-1, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y-1, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y-1, boja, ZNAK_KOCKICA);
+			break;
+		case R_1:
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y-1, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y+1, boja, ZNAK_KOCKICA);
+			break;
+		}
+		break;
+
+
+	case P_J:
+		switch(rot){
+		case R_0:
+			drawSign(x-1, y-1, boja, ZNAK_KOCKICA);
+			drawSign(x-1, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y, boja, ZNAK_KOCKICA);
+			break;
+		case R_1:
+			drawSign(x, y-1, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y+1, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y-1, boja, ZNAK_KOCKICA);
+			break;
+		case R_2:
+			drawSign(x-1, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y+1, boja, ZNAK_KOCKICA);
+			break;
+		case R_3:
+			drawSign(x-1, y+1, boja, ZNAK_KOCKICA);
+			drawSign(x, y-1, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y+1, boja, ZNAK_KOCKICA);
+			break;
+
+		}
+		break;
+
+
+	case P_L:
+		switch(rot){
+		case R_0:
+			drawSign(x-1, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y-1, boja, ZNAK_KOCKICA);
+			break;
+		case R_1:
+			drawSign(x, y-1, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y+1, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y+1, boja, ZNAK_KOCKICA);
+			break;
+		case R_2:
+			drawSign(x-1, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y, boja, ZNAK_KOCKICA);
+			drawSign(x-1, y+1, boja, ZNAK_KOCKICA);
+			break;
+		case R_3:
+			drawSign(x-1, y-1, boja, ZNAK_KOCKICA);
+			drawSign(x, y-1, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y+1, boja, ZNAK_KOCKICA);
+			break;
+		}
+		break;
+
+
+	case P_T:
+		switch(rot){
+		case R_0:
+			drawSign(x, y-1, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x-1, y, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y, boja, ZNAK_KOCKICA);
+			break;
+		case R_1:
+			drawSign(x, y-1, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y+1, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y, boja, ZNAK_KOCKICA);
+			break;
+		case R_2:
+			drawSign(x-1, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x+1, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y+1, boja, ZNAK_KOCKICA);
+			break;
+		case R_3:
+			drawSign(x-1, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y-1, boja, ZNAK_KOCKICA);
+			drawSign(x, y, boja, ZNAK_KOCKICA);
+			drawSign(x, y+1, boja, ZNAK_KOCKICA);
+			break;
+		}
+		break;
+
 
 	}
 }
 
+
 void drawPeaces(void) {
 	drawPeace(6, 6, 4, 4, P_O, R_0);
+
 }
 
+void testPeaces(void) {
+	drawPeace(0, 0, 4, 4, P_O, R_0);
+	drawPeace(5, 0, 4, 4, P_I, R_0);
+	drawPeace(10, 0, 4, 4, P_I, R_1);
+	drawPeace(15, 0, 4, 4, P_S, R_0);
+	drawPeace(20, 0, 4, 4, P_S, R_1);
+	drawPeace(25, 0, 4, 4, P_Z, R_0);
+	drawPeace(30, 0, 4, 4, P_Z, R_1);
+	drawPeace(0, 5, 4, 4, P_J, R_0);
+	drawPeace(5, 5, 4, 4, P_J, R_1);
+	drawPeace(10, 5, 4, 4, P_J, R_2);
+	drawPeace(15, 5, 4, 4, P_J, R_3);
+	drawPeace(20, 5, 4, 4, P_L, R_0);
+	drawPeace(25, 5, 4, 4, P_L, R_1);
+	drawPeace(30, 5, 4, 4, P_L, R_2);
+	drawPeace(0, 10, 4, 4, P_L, R_3);
+	drawPeace(5, 10, 4, 4, P_T, R_0);
+	drawPeace(10, 10, 4, 4, P_T, R_1);
+	drawPeace(15, 10, 4, 4, P_T, R_2);
+	drawPeace(20, 10, 4, 4, P_T, R_3);
+
+
+}
 
 
 // ----------------------------------- CURRENT GAME STATISTICS -------------------------------
@@ -290,9 +499,14 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 	//drawing screen and counting interrupts
 	interruptAnim++;
 	interruptBrojac++;
+#if TEST_MODE
+	testPeaces();
+#else
 	drawMap();
 	drawPeaces();
 	//drawGameState();
+
+#endif
 }
 
 
@@ -348,8 +562,13 @@ int main() {
 
 	initializingPlatform();
 
+
+
+#if !TEST_MODE
 	drawBackground();
 	drawStaticGameMessages();
+
+#endif
 
 	while(1){
 
