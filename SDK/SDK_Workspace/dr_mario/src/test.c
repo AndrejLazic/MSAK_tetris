@@ -178,7 +178,7 @@ void drawTable(u8 table[16][8], int table_x, int table_y){
 	}
 }
 
-void fallingBlocks(){
+/*void fallingBlocks(){
 	int x = 6;
 	int y = 6;
 	int boja = 3;
@@ -203,7 +203,7 @@ void fallingBlocks(){
 
 	}
 
-}
+}*/
 
 
 void drawMap(){
@@ -211,7 +211,7 @@ void drawMap(){
 	drawTable(table2, 6+8+12, 6);
 }
 
-void falling2(){
+/*void falling2(){
 	int x = 6;
 	int y = 26;
 	while(1){
@@ -224,7 +224,7 @@ void falling2(){
 	}
 
 
-}
+}*/
 
 void drawPeace(int table_x, int table_y, int x, int y, pieces_t piece, rotation_t rot) {
 	int boja = 3;
@@ -417,6 +417,24 @@ void testPeaces(void) {
 }
 
 
+
+void drawNext(pieces_t piece, rotation_t rot){
+	//piece =(pieces_t) (rand() % 7);
+	drawPeace(18, 15, 0, 0, piece, R_0);
+	}
+
+void drawNext1(void){
+
+	pieces_t piece= 2;//(rand() % 7);
+	drawNext(piece, R_0);
+
+	//for (int i = 0; i < 100000; i++){}
+
+
+
+}
+
+
 // ----------------------------------- CURRENT GAME STATISTICS -------------------------------
 // it draws game statistic: current level, number of viruses, current game speed and current score
 void drawGameState(){
@@ -504,6 +522,7 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 #else
 	drawMap();
 	drawPeaces();
+	drawNext1();
 	//drawGameState();
 
 #endif
@@ -567,6 +586,7 @@ int main() {
 #if !TEST_MODE
 	drawBackground();
 	drawStaticGameMessages();
+
 
 #endif
 
