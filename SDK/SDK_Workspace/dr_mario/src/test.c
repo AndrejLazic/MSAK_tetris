@@ -47,7 +47,7 @@ unsigned char sPlayer1[] = "PLAYER1";
 unsigned char sSCORE1[] = "SCORE1";
 unsigned char sSCORE2[] = "SCORE2";
 
-const unsigned char backround[30][40]={
+unsigned char backround[30][40]={
 				{1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1},
 				{1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1},
 				{1,1,1,0,0,  0,0,0,0,0,  0,0,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,0,0,  0,0,0,0,0,  0,0,1,1,1},
@@ -124,8 +124,8 @@ u8 table1[16][8] = {
 	{0,0,0,0,    0,0,0,0},
 	{0,0,0,0,    0,0,0,0},
 	{0,0,0,0,    0,0,0,0},
-	{0,0,0,2,    0,0,0,0},
-	{0,0,2,2,    2,0,0,0},
+	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,    0,0,0,0},
 
 };
 
@@ -149,8 +149,14 @@ u8 table2[16][8] = {
 
 };
 
-	unsigned long interruptBrojac;
-	unsigned long interruptAnim;
+u8 table_next[4][4] = {
+	{0,0,0,0},
+	{0,0,0,0},
+	{0,0,0,0},
+	{0,0,0,0},
+
+};
+
 
 
 
@@ -178,19 +184,19 @@ void drawTable(u8 table[16][8], int table_x, int table_y){
 	}
 }
 
-void fallingBlocks(Xuint32 addr){
-	int k = 0,x=1,y=1;
-	while(k<5){
-
-		//set_cursor(addr + 20*16*k);
-		drawPeace(x,y++,6,8,P_O, R_0);
-		k++;
-
+void drawTable_next(u8 table[4][4], int table_x, int table_y){
+	for(int y = 0; y < 4 ; y++){
+		int out_y = y + table_y;
+			for(int x = 0; x < 4; x++){
+				int out_x = x + table_x;
+				switch(table[y][x]){
+					case 0: drawSign(out_x, out_y, 2, BACKGROUND_ZNAK);    break;
+					//case 2: drawSign(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
+				}
+			}
 	}
-	while(1){}
-
-
 }
+
 
 
 void drawMap(){
@@ -198,20 +204,7 @@ void drawMap(){
 	drawTable(table2, 6+8+12, 6);
 }
 
-/*void falling2(){
-	int x = 6;
-	int y = 26;
-	while(1){
-		drawTable(table2, y,x);
-		set_cursor(y*40 + x +160);
-		x++;
-		y++;
-		for (int i =0; i < 10000; i++){}
 
-	}
-
-
-}*/
 
 void drawPeace(int table_x, int table_y, int x, int y, pieces_t piece, rotation_t rot) {
 	int boja = 3;
@@ -373,9 +366,44 @@ void drawPeace(int table_x, int table_y, int x, int y, pieces_t piece, rotation_
 	}
 }
 
+int peace0_x = 4;
+int peace0_y = 4;
+pieces_t piece;
+int start_flag=1;
 
 void drawPeaces(void) {
-	drawPeace(6, 6, 4, 4, P_O, R_0);
+
+
+	drawPeace(6, 3, peace0_x, peace0_y, piece, R_0);
+
+}
+
+bool can_move(){
+	//switch case
+
+	if(table1[peace0_y-1][peace0_x]==0){ //NE ++!
+			return true;
+		}
+	return false;
+}
+
+void draw_piece_to_table(){
+	table1[peace0_y-2][peace0_x]=2;
+}
+
+void fallPeaces(void){
+	peace0_y++;
+	if(can_move()){
+
+	}
+	else{
+		draw_piece_to_table();
+		piece=rand()%7;
+		peace0_y=4;
+		drawPeaces();
+	}
+
+
 
 }
 
@@ -406,20 +434,21 @@ void testPeaces(void) {
 
 
 void drawNext(pieces_t piece, rotation_t rot){
-	//piece =(pieces_t) (rand() % 7);
-	drawPeace(18, 15, 0, 0, piece, R_0);
+		drawTable_next(table_next,16,14);
+		drawPeace(18, 15, 0, 0, piece, R_0);
 	}
 
-void drawNext1(void){
-
-	pieces_t piece= 2;//(rand() % 7);
+void drawNextInTable(void){
+	/*if(start_flag==1){
+	piece= rand() % 7;
+	start_flag=0;
+	}*/
 	drawNext(piece, R_0);
-
-	//for (int i = 0; i < 100000; i++){}
-
-
+	for(int i = 0; i<10000;i++){}
+	drawPeace(6, 3, peace0_x, peace0_y, piece, R_0);
 
 }
+
 
 
 // ----------------------------------- CURRENT GAME STATISTICS -------------------------------
@@ -501,17 +530,22 @@ void drawBackground(){
 // on every interrupt call entire game table is drawn
 
 void my_timer_interrupt_handler(void * baseaddr_p) {
-	//drawing screen and counting interrupts
-	interruptAnim++;
-	interruptBrojac++;
+	//drawing screen and counting interrupts.
+
+	static int frame_cnt = 0;
+	static int frame1_cnt = 0;
+	frame_cnt++;
+	frame1_cnt++;
+
 #if TEST_MODE
 	testPeaces();
 #else
 	drawMap();
-	drawPeaces();
-	drawNext1();
-	fallingBlocks(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
-	//drawGameState();
+	drawNextInTable();
+	if(frame_cnt % 25 == 0){
+		fallPeaces();
+		}
+
 
 #endif
 }
