@@ -157,7 +157,7 @@ u8 table2[16][8] = {
 typedef enum {P_O, P_I, P_S, P_Z, P_L, P_J, P_T} pieces_t;
 typedef enum {R_0, R_1, R_2, R_3} rotation_t;
 void drawPeaces(void);
-
+Xuint32 addr = XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR;
 
 void drawSign(int x, int y, int boja, int znak){
 	set_cursor(y*40+x);
@@ -178,32 +178,19 @@ void drawTable(u8 table[16][8], int table_x, int table_y){
 	}
 }
 
-/*void fallingBlocks(){
-	int x = 6;
-	int y = 6;
-	int boja = 3;
-	print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, ZNAK_KOCKICA);
-	while (1){
+void fallingBlocks(Xuint32 addr){
+	int k = 0,x=1,y=1;
+	while(k<5){
 
-		if (x < 14){
-			x++;
-		}
-		else
-		{
-			if ( y < 22 )
-			{
-				y++;
-			}else
-			{
-				y = 6;
-			}
-		}
-		set_cursor(y*40 + x);
-		print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, ZNAK_KOCKICA);
+		//set_cursor(addr + 20*16*k);
+		drawPeace(x,y++,6,8,P_O, R_0);
+		k++;
 
 	}
+	while(1){}
 
-}*/
+
+}
 
 
 void drawMap(){
@@ -523,6 +510,7 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 	drawMap();
 	drawPeaces();
 	drawNext1();
+	fallingBlocks(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
 	//drawGameState();
 
 #endif
