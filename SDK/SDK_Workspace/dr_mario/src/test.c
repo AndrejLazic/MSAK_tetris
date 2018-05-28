@@ -87,65 +87,47 @@ unsigned char backround[30][40]={
 };
 
 
-u8 landed[16][8] = {
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
 
-};
 
 
 
 u8 table1[16][8] = {
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,2,2,0,0,0},
+	{0,0,0,2,2,0,0,0},
 
 };
 
 u8 table2[16][8] = {
-	{0,0,2,2,    2,0,0,0},
-	{0,0,0,2,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
-	{0,0,0,0,    0,0,0,0},
+	{0,0,3,3,3,0,0,0},
+	{0,0,0,3,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
 
 };
 
@@ -179,6 +161,7 @@ void drawTable(u8 table[16][8], int table_x, int table_y){
 				switch(table[y][x]){
 					case 0: drawSign(out_x, out_y, 2, BACKGROUND_ZNAK);    break;
 					case 2: drawSign(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
+					case 3: drawSign(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
 				}
 			}
 	}
@@ -191,7 +174,7 @@ void drawTable_next(u8 table[4][4], int table_x, int table_y){
 				int out_x = x + table_x;
 				switch(table[y][x]){
 					case 0: drawSign(out_x, out_y, 2, BACKGROUND_ZNAK);    break;
-					//case 2: drawSign(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
+					case 2: drawSign(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
 				}
 			}
 	}
@@ -378,34 +361,39 @@ void drawPeaces(void) {
 
 }
 
-bool can_move(){
-	//switch case
+void testCollision(u8 table[16][8], int table_x, int table_y, pieces_t piece, rotation_t rot, int x, int y){
+	u8 tmp_table[16][8];
 
-	if(table1[peace0_y-1][peace0_x]==0){ //NE ++!
-			return true;
+	for (int i = 0; i < 16; i++){
+		for (int j = 0; j < 8; j++){
+			tmp_table[i][j] = table1[i][j];
 		}
-	return false;
+	}
+
 }
 
-void draw_piece_to_table(){
-	table1[peace0_y-2][peace0_x]=2;
+bool drawPeaceToTable(u8 table[16][8], pieces_t piece){
+
+
+
 }
 
 void fallPeaces(void){
 	peace0_y++;
-	if(can_move()){
 
-	}
-	else{
-		draw_piece_to_table();
+	/*else{
+
 		piece=rand()%7;
 		peace0_y=4;
 		drawPeaces();
-	}
-
-
-
+	}*/
 }
+
+
+
+
+
+
 
 void testPeaces(void) {
 	drawPeace(0, 0, 4, 4, P_O, R_0);
@@ -439,13 +427,12 @@ void drawNext(pieces_t piece, rotation_t rot){
 	}
 
 void drawNextInTable(void){
-	/*if(start_flag==1){
-	piece= rand() % 7;
-	start_flag=0;
-	}*/
+
 	drawNext(piece, R_0);
 	for(int i = 0; i<10000;i++){}
 	drawPeace(6, 3, peace0_x, peace0_y, piece, R_0);
+
+
 
 }
 
@@ -469,9 +456,9 @@ void drawGameState(){
     print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_lvl, 2);
 */
 
-
-
 }
+
+
 
 // ------------------------------- DRAWING THE GAME STATIC MESSAGES --------------------------
 // draws strings on background, its called only on the start of the game
@@ -544,7 +531,8 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 	drawNextInTable();
 	if(frame_cnt % 25 == 0){
 		fallPeaces();
-		}
+
+	}
 
 
 #endif
@@ -619,4 +607,5 @@ int main() {
 	cleanup_platform();
 	return 0;
 }
+
 
