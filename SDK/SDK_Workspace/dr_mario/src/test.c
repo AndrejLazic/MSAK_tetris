@@ -15,6 +15,7 @@
 
 
 #define ZNAK_KOCKICA        0x1B
+#define ZNAK_KOCKICA1       0x1B
 #define VERTIKALNA_IVICA 	0x2D
 #define HORIZONTALNA_IVICA	0x3C
 #define UGAO_GORNJI_DESNI	0x3D
@@ -89,6 +90,26 @@ unsigned char backround[30][40]={
 
 
 
+u8 tmp_table[16][8] = {
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+
+};
+
 
 
 u8 table1[16][8] = {
@@ -106,8 +127,8 @@ u8 table1[16][8] = {
 	{0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0},
-	{0,0,0,2,2,0,0,0},
-	{0,0,0,2,2,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
 
 };
 
@@ -161,7 +182,7 @@ void drawTable(u8 table[16][8], int table_x, int table_y){
 				switch(table[y][x]){
 					case 0: drawSign(out_x, out_y, 2, BACKGROUND_ZNAK);    break;
 					case 2: drawSign(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
-					case 3: drawSign(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
+					case 4: drawSign(out_x, out_y, 2, ZNAK_KOCKICA1)   ;    break;
 				}
 			}
 	}
@@ -183,8 +204,8 @@ void drawTable_next(u8 table[4][4], int table_x, int table_y){
 
 
 void drawMap(){
-	drawTable(table1, 6, 6);
-	drawTable(table2, 6+8+12, 6);
+	drawTable(tmp_table, 6, 6);// MIJENJALI
+	drawTable(table1, 6+8+12, 6);
 }
 
 
@@ -354,39 +375,63 @@ int peace0_y = 4;
 pieces_t piece;
 int start_flag=1;
 
-void drawPeaces(void) {
 
 
-	drawPeace(6, 3, peace0_x, peace0_y, piece, R_0);
+void testCollision(u8 tmp_table1[16][8],u8 table1[16][8]){ // Kopirali u table ono sto nam je u temp table koju inace iscrtavamo, prebacili u table sve na dvojke, ocistili temp radi naredne itearcije i prebacili iz table u temp dvojke
 
-}
 
-void testCollision(u8 table[16][8], int table_x, int table_y, pieces_t piece, rotation_t rot, int x, int y){
-	u8 tmp_table[16][8];
-
-	for (int i = 0; i < 16; i++){
-		for (int j = 0; j < 8; j++){
-			tmp_table[i][j] = table1[i][j];
+	for (int y_table = 6;  y_table < 22; y_table++){
+		for (int x_table = 6; x_table < 14; x_table++){
+			table1[y_table][x_table] = tmp_table1[y_table][x_table];
 		}
 	}
 
+	for (int y_table = 6; y_table < 22; y_table++){
+			for (int x_table = 6; x_table < 14; x_table++){
+				if (table1[y_table][x_table] == 3){
+					table1[y_table][x_table] = 2;
+				}
+
+		}
+	}
+
+	for (int y_table = 6; y_table < 22; y_table++){
+		for (int x_table = 6; x_table < 14; x_table++){
+			tmp_table1[y_table][x_table] = 0;
+
+			}
+		}
+
+
+	for (int y_table = 6; y_table < 22; y_table++){
+		for (int x_table = 6; x_table < 14; x_table++){
+			tmp_table1[y_table][x_table] = table1[y_table][x_table];
+
+				}
+			}
+
 }
 
-bool drawPeaceToTable(u8 table[16][8], pieces_t piece){
-
-
-
+bool drawPeaceToTable(u8 table[16][8]){
+		if (table[peace0_y+1][peace0_x] == 2 || peace0_y == 19){
+			return true;
+		}
+		return false;
 }
 
 void fallPeaces(void){
 	peace0_y++;
 
-	/*else{
-
-		piece=rand()%7;
+	if (drawPeaceToTable(tmp_table)){
+		testCollision(tmp_table,table1);
+		//drawTable(tmp_table, 6, 6);
+		piece=rand()%7; // ovdje je bio rand
 		peace0_y=4;
-		drawPeaces();
-	}*/
+		drawNextInTable();
+	}
+	else{
+
+	}
 }
 
 
@@ -418,8 +463,68 @@ void testPeaces(void) {
 
 
 }
+void fill3(pieces_t piece, u8 table[16][8],int x_table, int y_table){
+
+	switch (piece){
+
+		case P_O:
+				table[y_table][x_table] = 3;
+				table[y_table][x_table-1] = 3;
+				table[y_table-1][x_table] = 3;
+				table[y_table-1][x_table-1] = 3;
+				break;
+		case P_I:
+				table[y_table][x_table-2] = 3;
+				table[y_table][x_table-1] = 3;
+				table[y_table][x_table] = 3;
+				table[y_table][x_table+1] = 3;
+				break;
+
+		case P_Z:
+				table[y_table][x_table] = 3;
+				table[y_table][x_table+1] = 3;
+				table[y_table-1][x_table] = 3;
+				table[y_table-1][x_table-1] = 3;
+				break;
+
+		case P_S:
+				table[y_table][x_table-1] = 3;
+				table[y_table][x_table] = 3;
+				table[y_table-1][x_table] = 3;
+				table[y_table-1][x_table+1] = 3;
+				break;
+
+		case P_J:
+				table[y_table-1][x_table-1] = 3;
+				table[y_table][x_table-1] = 3;
+				table[y_table][x_table] = 3;
+				table[y_table][x_table+1] = 3;
+				break;
+
+		case P_L:
+				table[y_table][x_table-1] = 3;
+				table[y_table][x_table] = 3;
+				table[y_table][x_table+1] = 3;
+				table[y_table-1][x_table+1] = 3;
+				break;
+		case P_T:
+				table[y_table-1][x_table] = 3;
+				table[y_table][x_table] = 3;
+				table[y_table][x_table-1] = 3;
+				table[y_table][x_table+1] = 3;
+				break;
+
+	}
+
+}
 
 
+
+void drawPeaces(void) {
+
+	drawPeace(6, 3, peace0_x, peace0_y, piece, R_0);
+
+}
 
 void drawNext(pieces_t piece, rotation_t rot){
 		drawTable_next(table_next,16,14);
@@ -431,10 +536,11 @@ void drawNextInTable(void){
 	drawNext(piece, R_0);
 	for(int i = 0; i<10000;i++){}
 	drawPeace(6, 3, peace0_x, peace0_y, piece, R_0);
-
+	fill3(piece, tmp_table, 4, 4);
 
 
 }
+
 
 
 
