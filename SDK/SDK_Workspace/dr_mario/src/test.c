@@ -15,7 +15,7 @@
 
 
 #define ZNAK_KOCKICA        0x1B
-#define ZNAK_KOCKICA1       0x1B
+#define ZNAK_KOCKICA1       0x26
 #define VERTIKALNA_IVICA 	0x2D
 #define HORIZONTALNA_IVICA	0x3C
 #define UGAO_GORNJI_DESNI	0x3D
@@ -182,7 +182,7 @@ void drawTable(u8 table[16][8], int table_x, int table_y){
 				switch(table[y][x]){
 					case 0: drawSign(out_x, out_y, 2, BACKGROUND_ZNAK);    break;
 					case 2: drawSign(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
-					case 4: drawSign(out_x, out_y, 2, ZNAK_KOCKICA1)   ;    break;
+					case 3: drawSign(out_x, out_y, 2, ZNAK_KOCKICA1)   ;    break;
 				}
 			}
 	}
@@ -424,7 +424,7 @@ void fallPeaces(void){
 
 	if (drawPeaceToTable(tmp_table)){
 		testCollision(tmp_table,table1);
-		//drawTable(tmp_table, 6, 6);
+		drawTable(tmp_table, 6, 6);
 		piece=rand()%7; // ovdje je bio rand
 		peace0_y=4;
 		drawNextInTable();
@@ -536,7 +536,7 @@ void drawNextInTable(void){
 	drawNext(piece, R_0);
 	for(int i = 0; i<10000;i++){}
 	drawPeace(6, 3, peace0_x, peace0_y, piece, R_0);
-	fill3(piece, tmp_table, 4, 4);
+	//fill3(piece, tmp_table, peace0_x, peace0_y);
 
 
 }
@@ -609,7 +609,7 @@ void drawBackground(){
 				case 0: znak = BACKGROUND_ZNAK;    break;
 				case 1: znak = BACKGROUND_ZNAK;    break;
 				case 2: znak = ZNAK_KOCKICA   ;    break;
-				case 3: znak = VERTIKALNA_IVICA;   break;
+				case 3: znak = ZNAK_KOCKICA1  ;   break;
 				case 4: znak = UGAO_GORNJI_LEVI;   break;
 				case 5: znak = UGAO_DONJI_DESNI;   break;
 				case 6: znak = UGAO_GORNJI_DESNI;  break;
