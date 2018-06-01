@@ -377,7 +377,7 @@ int start_flag=1;
 
 
 
-void testCollision(u8 tmp_table1[16][8],u8 table1[16][8]){ // Kopirali u table ono sto nam je u temp table koju inace iscrtavamo, prebacili u table sve na dvojke, ocistili temp radi naredne itearcije i prebacili iz table u temp dvojke
+void drawPeaceToTable(u8 tmp_table1[16][8],u8 table1[16][8]){ // Kopirali u table ono sto nam je u temp table koju inace iscrtavamo, prebacili u table sve na dvojke, ocistili temp radi naredne itearcije i prebacili iz table u temp dvojke
 
 
 	for (int y_table = 6;  y_table < 22; y_table++){
@@ -387,11 +387,10 @@ void testCollision(u8 tmp_table1[16][8],u8 table1[16][8]){ // Kopirali u table o
 	}
 
 	for (int y_table = 6; y_table < 22; y_table++){
-			for (int x_table = 6; x_table < 14; x_table++){
-				if (table1[y_table][x_table] == 3){
-					table1[y_table][x_table] = 2;
-				}
-
+		for (int x_table = 6; x_table < 14; x_table++){
+			if (table1[y_table][x_table] == 2){
+				table1[y_table][x_table] = 3;
+			}
 		}
 	}
 
@@ -399,21 +398,21 @@ void testCollision(u8 tmp_table1[16][8],u8 table1[16][8]){ // Kopirali u table o
 		for (int x_table = 6; x_table < 14; x_table++){
 			tmp_table1[y_table][x_table] = 0;
 
-			}
 		}
+	}
 
 
 	for (int y_table = 6; y_table < 22; y_table++){
 		for (int x_table = 6; x_table < 14; x_table++){
 			tmp_table1[y_table][x_table] = table1[y_table][x_table];
 
-				}
-			}
+		}
+	}
 
 }
 
-bool drawPeaceToTable(u8 table[16][8]){
-		if (table[peace0_y+1][peace0_x] == 2 || peace0_y == 19){
+bool testCollision(u8 table[16][8]){
+		if (table[peace0_y+1][peace0_x] == 3 || peace0_y == 19){
 			return true;
 		}
 		return false;
@@ -422,12 +421,13 @@ bool drawPeaceToTable(u8 table[16][8]){
 void fallPeaces(void){
 	peace0_y++;
 
-	if (drawPeaceToTable(tmp_table)){
-		testCollision(tmp_table,table1);
-		drawTable(tmp_table, 6, 6);
-		piece=rand()%7; // ovdje je bio rand
+	if (testCollision(tmp_table)){
+		drawPeaceToTable(tmp_table,table1);
+		drawMap();
+		piece=rand()%7;
 		peace0_y=4;
 		drawNextInTable();
+
 	}
 	else{
 
@@ -536,7 +536,7 @@ void drawNextInTable(void){
 	drawNext(piece, R_0);
 	for(int i = 0; i<10000;i++){}
 	drawPeace(6, 3, peace0_x, peace0_y, piece, R_0);
-	//fill3(piece, tmp_table, peace0_x, peace0_y);
+	//fill3(piece, tmp_table, peace0_x, val);
 
 
 }
@@ -614,6 +614,21 @@ void drawBackground(){
 				case 5: znak = UGAO_DONJI_DESNI;   break;
 				case 6: znak = UGAO_GORNJI_DESNI;  break;
 				case 7: znak = UGAO_DONJI_LEVI;    break;
+			}
+			print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
+		}
+}
+
+void drawTmpTable(){
+	for(int y=0; y<16; y++)
+		for(int x=0; x<8; x++){
+			set_cursor(y*40+x);
+			int boja = 0;
+			int znak = 0;
+			switch(tmp_table[y][x]){
+				case 0: znak = BACKGROUND_ZNAK;    break;
+				case 2: znak = ZNAK_KOCKICA   ;    break;
+				case 3: znak = ZNAK_KOCKICA1  ;   break;
 			}
 			print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
 		}
