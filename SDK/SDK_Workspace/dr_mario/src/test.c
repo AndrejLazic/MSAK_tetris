@@ -227,10 +227,11 @@ void drawPeace(int table_x, int table_y, int x, int y, pieces_t piece, rotation_
 		drawSign(x-1, y, boja, ZNAK_KOCKICA);
 		drawSign(x, y-1, boja, ZNAK_KOCKICA);
 		drawSign(x-1, y-1, boja, ZNAK_KOCKICA);
-		tmp_table[y-7][x+2] = 2;
+
+/*		tmp_table[y-7][x+2] = 2;
 		tmp_table[y-7][x+2-1] = 2;
 		tmp_table[y-7-1][x+2] = 2;
-		tmp_table[y-7-1][x+2-1] = 2;
+		tmp_table[y-7-1][x+2-1] = 2;*/
 
 		break;
 
@@ -418,42 +419,56 @@ int start_flag=1;
 
 
 
-void drawPeaceToTable(u8 tmp_table1[16][8],u8 table1[16][8]){ // Kopirali u table ono sto nam je u temp table koju inace iscrtavamo, prebacili u table sve na dvojke, ocistili temp radi naredne itearcije i prebacili iz table u temp dvojke
+void drawPeaceToTable(u8 tmp_table1[16][8],u8 tbl1[16][8]){ // Kopirali u table ono sto nam je u temp table koju inace iscrtavamo, prebacili u table sve na dvojke, ocistili temp radi naredne itearcije i prebacili iz table u temp dvojke
+
+	int i;
 
 
-	for (int y_table = 0;  y_table < 22; y_table++){
-		for (int x_table = 0; x_table < 14; x_table++){
-			table1[y_table][x_table] = tmp_table1[y_table][x_table];
+	for (int y_table = 0;  y_table < 16; y_table++){
+		for (int x_table = 0; x_table < 8; x_table++){
+			table1[y_table][x_table] = tmp_table[y_table][x_table];
+
+			if(tmp_table[y_table][x_table] != 0)
+				xil_printf("aaaa = %d\n\r", tmp_table[y_table][x_table]);
 		}
+		//xil_printf("\n\r");
 	}
 
-	for (int y_table = 0; y_table < 22; y_table++){
-		for (int x_table = 0; x_table < 14; x_table++){
+	for (int y_table = 0; y_table < 16; y_table++){
+		for (int x_table = 0; x_table < 8; x_table++){
 			if (table1[y_table][x_table] == 2){
 				table1[y_table][x_table] = 3;
 			}
 		}
 	}
 
-	for (int y_table = 0; y_table < 22; y_table++){
-		for (int x_table = 0; x_table < 14; x_table++){
-			tmp_table1[y_table][x_table] = 0;
+	for (int y_table = 0; y_table < 16; y_table++){
+		for (int x_table = 0; x_table < 8; x_table++){
+			tmp_table[y_table][x_table] = 0;
 
 		}
 	}
 
 
-	for (int y_table = 0; y_table < 22; y_table++){
-		for (int x_table = 0; x_table < 14; x_table++){
-			tmp_table1[y_table][x_table] = table1[y_table][x_table];
+	for (int y_table = 0; y_table < 16; y_table++){
+		for (int x_table = 0; x_table < 8; x_table++){
+			tmp_table[y_table][x_table] = table1[y_table][x_table];
 
 		}
 	}
 
+#if 0
+	for(i = 0; i < 8; i++) {
+			xil_printf("%d", tbl1[peace0_y][i]);
+		}
+		xil_printf("\n\r");
+#endif
 }
 
 bool testCollision(u8 table[16][8]){
-		if (table[peace0_y+1-4][peace0_x] == 3 || peace0_y == 19){
+	int i;
+	if (peace0_y == 19 || table[peace0_y][peace0_x] == 3){ // ovaj drugi uslov je stavljao ispod ifa
+
 			return true;
 		}
 		return false;
@@ -461,18 +476,23 @@ bool testCollision(u8 table[16][8]){
 
 void fallPeaces(void){
 	peace0_y++;
-	drawPeaceToTable(tmp_table,table1);
+//	drawPeaceToTable(tmp_table,table1);
 
 	if (testCollision(tmp_table)){
-		drawPeaceToTable(tmp_table,table1);
+		xil_printf("tmp_tbl=%d\n\r", tmp_table[19][4]);
+		//drawPeaceToTable(tmp_table, table1);
+		table1[peace0_y][peace0_x] = tmp_table[peace0_y][peace0_x];
+
+		xil_printf("table1=%d\n\r", table1[19][4]);
 		piece=rand()%7;
 		peace0_y=4;
 		drawNextInTable();
-
 	}
 	else{
 
 	}
+
+
 }
 
 void testPeaces(void) {
@@ -746,7 +766,6 @@ void initializingPlatform(){
 int main() {
 
 	initializingPlatform();
-
 
 
 #if !TEST_MODE
