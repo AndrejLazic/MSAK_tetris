@@ -89,7 +89,8 @@ unsigned char backround[30][40]={
 
 
 
-
+// 2 - falling
+// 3 - fallen.
 u8 tmp_table[16][8] = {
 	{0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0},
@@ -132,9 +133,33 @@ u8 table1[16][8] = {
 
 };
 
+
+
 u8 table2[16][8] = {
-	{0,0,3,3,3,0,0,0},
-	{0,0,0,3,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+
+};
+
+
+
+u8 tmp_table2[16][8] = {
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0},
@@ -159,7 +184,6 @@ u8 table_next[4][4] = {
 	{0,0,0,0},
 
 };
-
 
 
 
@@ -412,8 +436,8 @@ void drawPieceToScreen(int table_x, int table_y, int x, int y, piece_types_t pie
 }
 
 void drawSign(int x, int y){
-	// Drawing sign to tmp_table.
-	tmp_table[y][x] = 2; //bilo je 3,ali ako su ovde znaci koji trebaju tek da padaju zar nisu 2????
+	// Drawing falling sign to tmp_table.
+	tmp_table[y][x] = 2;
 }
 
 void drawPiece(const piece_gameplay_struct_t* piece){
@@ -601,40 +625,57 @@ void fallPeace(piece_gameplay_struct_t* piece){
 
 
 
-bool checkCollision(){
-	// Go to tmp_table and check if there is any 3 above 2.
-	int i,j;
-	for (i = 0; i < 16; i ++){
-			for (j = 0; j < 16; j++){
-				if (tmp_table[i+1][j+1] == 3){
-						return true;
-					}
+bool checkCollision(u8 table[16][8]){ // OVDJE SMO DODALI OVO KAO PARAMETAR INACE RADILI SA TMP TABLE
+	for (int y = 0; y < 16; y++) {
+		for (int x = 0; x < 8; x++) {
+			// Go to tmp_table and check if there is any 2 above 3.
+			if(table[y][x] == 3){
+				if(table[y-1][x] == 2){
+					return true;
 				}
-
 			}
+
+			// 2 is on the bottom.
+			if(y == 15){
+				if(table[y][x] == 2){
+					return true;
+				}
+			}
+		}
+	}
 
 	return false;
 
 }
 
-void updateTable(u8 table[16][8]){
-	int i,j;
-	for (i = 0; i < 16; i ++){
-		for (j = 0; j < 16; j++){
-				table[i][j] = tmp_table[i][j];
+void updateTable(u8 table[16][8],u8 temp_table[16][8]) { // DODALI JEDAN PARAMETAR, TMP_TABELA
+	for (int y = 0; y < 16; y++) {
+		for (int x = 0; x < 8; x++) {
+			switch(temp_table[y][x]){
+			case 2:
+				table[y][x] = 3;
+				break;
+			case 3:
+				table[y][x] = 3;
+				break;
 			}
 
 		}
-
-	for (i = 0; i < 16; i ++){
-			for (j = 0; j < 16; j++){
-					if (table[i][j] == 2){
-						table[i][j] = 3;
-						}
-
-					}
-
 	}
+}
+
+
+bool checkGameOver(u8 table[16][8]){
+	for (int y = 0; y < 16; y++) {
+		for (int x = 0; x < 8; x++) {
+			if (table[1][x] == 3){
+				return true;
+			}
+		}
+	}
+
+	return false;
+
 }
 
 
@@ -642,7 +683,7 @@ void spawnNewPiece(piece_gameplay_struct_t* piece) {
 
 	piece->type = rand()%7;
 	piece->x = 4;
-	piece->y = 4;
+	piece->y = 0;
 
 
 }
@@ -677,16 +718,16 @@ void drawPieceToScreens(void) {
 
 }
 
-void drawNext(piece_types_t piece, rotation_t rot){
+void drawNext(piece_gameplay_struct_t* piece){
 		drawTable_next(table_next,16,14);
-		drawPieceToScreen(18, 15, 0, 0, piece, R_0);
+		drawPieceToScreen(18, 15, 0, 0, piece->type, piece->rot);
 	}
 
-void drawNextInTable(void){
+void drawNextInTable(piece_gameplay_struct_t* piece){
+	//pieces[0].type = rand()%7;
 
-	drawNext(piece, R_0);
-	for(int i = 0; i<10000;i++){}
-	drawPieceToScreen(6, 3, peace1_x, peace1_y, piece, R_0);
+	drawNext(piece);
+	//drawPieceToScreen(6, 3, peace1_x, peace1_y, piece, R_0);
 
 
 }
@@ -769,12 +810,12 @@ void drawBackground(){
 		}
 }
 
-void drawToScreen(int table_x, int table_y){
+void drawToScreen(int table_x, int table_y, u8 table[16][8]){
 	for(int y=0; y<16; y++)
 		for(int x=0; x<8; x++){
 			int boja = 0;
 			int znak = 0;
-			switch (tmp_table[y][x]) {
+			switch (table[y][x]) {
 			case 0:
 				boja = 0;
 				znak = BACKGROUND_ZNAK;
@@ -810,7 +851,7 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 	testPeaces();
 #else
 
-	//drawPiece(&pieces[0]);
+
 	// Fall pieces on every second.
 	if(frame_cnt % 25 == 0){
 		// Just increment piece position. Nothing else.
@@ -820,30 +861,44 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 
 
 
-
 	// Doing table1.
 
 	// Draw (copy) table1 to tmp_table.
 	copyTable(table1);
-
 	// Draw piece1 to tmp_table.
 	drawPiece(&pieces[0]);
 
+
+
+	drawNextInTable(&pieces[0]);
 	// Check collision between 2 and 3 in tmp_table.
-	if(checkCollision()){
+	if(checkCollision(tmp_table)){
 		// There is collision.
+
+
+		// check if game is over
+
 		// Copy tmp_table to table1, with converting all 3 to 2.
-		updateTable(table1);
+		updateTable(table1,tmp_table);
+
+
 
 		// Spawn new piece1.
 		spawnNewPiece(&pieces[0]);
+
+
 	}
 
-	// Draw tmp_table to screen.
-	drawToScreen(6, 6);
 
+
+	// Draw tmp_table to screen.
+	drawToScreen(6, 6,tmp_table);
 
 	// Doing table2.
+
+
+
+
 
 #endif
 }
