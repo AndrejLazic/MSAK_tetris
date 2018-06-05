@@ -163,15 +163,40 @@ u8 table_next[4][4] = {
 
 
 
-typedef enum {P_O, P_I, P_S, P_Z, P_L, P_J, P_T} pieces_t;
+typedef enum {P_O, P_I, P_S, P_Z, P_L, P_J, P_T} piece_types_t;
 typedef enum {R_0, R_1, R_2, R_3} rotation_t;
-void drawPeaces(void);
+
+typedef struct {
+	int x;
+	int y;
+	piece_types_t type;
+	rotation_t rot;
+} piece_gameplay_struct_t;
+
+
+piece_gameplay_struct_t pieces[2];
+
+int peace1_x = 4;
+int peace1_y = 4;
+piece_types_t piece;
+int start_flag=1;
+
 Xuint32 addr = XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR;
 
-void drawSign(int x, int y, int boja, int znak){
+
+
+
+void drawSignToScreen(int x, int y, int boja, int znak){
 	set_cursor(y*40+x);
 	print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
 }
+
+/*
+void drawMap(){
+	drawTable(tmp_table, 6, 6);// MIJENJALI
+	drawTable(table1, 6+8+12, 6);
+}
+
 
 
 void drawTable(u8 table[16][8], int table_x, int table_y){
@@ -180,22 +205,22 @@ void drawTable(u8 table[16][8], int table_x, int table_y){
 			for(int x = 0; x < 8; x++){
 				int out_x = x + table_x;
 				switch(table[y][x]){
-					case 0: drawSign(out_x, out_y, 2, BACKGROUND_ZNAK);    break;
-					case 2: drawSign(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
-					case 3: drawSign(out_x, out_y, 2, ZNAK_KOCKICA1)   ;    break;
+					case 0: drawSignToScreen(out_x, out_y, 2, BACKGROUND_ZNAK);    break;
+					case 2: drawSignToScreen(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
+					case 3: drawSignToScreen(out_x, out_y, 2, ZNAK_KOCKICA1)   ;    break;
 				}
 			}
 	}
 }
-
+*/
 void drawTable_next(u8 table[4][4], int table_x, int table_y){
 	for(int y = 0; y < 4 ; y++){
 		int out_y = y + table_y;
 			for(int x = 0; x < 4; x++){
 				int out_x = x + table_x;
 				switch(table[y][x]){
-					case 0: drawSign(out_x, out_y, 2, BACKGROUND_ZNAK);    break;
-					case 2: drawSign(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
+					case 0: drawSignToScreen(out_x, out_y, 2, BACKGROUND_ZNAK);    break;
+					case 2: drawSignToScreen(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
 				}
 			}
 	}
@@ -203,56 +228,46 @@ void drawTable_next(u8 table[4][4], int table_x, int table_y){
 
 
 
-void drawMap(){
-	drawTable(tmp_table, 6, 6);// MIJENJALI
-	drawTable(table1, 6+8+12, 6);
+
+void copyTable(u8 table1[16][8]){
+	for (int y = 0; y < 16; y++) {
+		for (int x = 0; x < 8; x++) {
+			tmp_table[y][x] = table1[y][x];
+		}
+	}
 }
 
 
-void drawPeace(int table_x, int table_y, int x, int y, pieces_t piece, rotation_t rot) {
+
+void drawPieceToScreen(int table_x, int table_y, int x, int y, piece_types_t piece, rotation_t rot) {//ovo nismo sada koristili
 	int boja = 3;
 	x += table_x;
 	y += table_y;
 
-//	for (int y_table = -1; y_table < 15; y_table++){
-//		for (int x_table = 6; x_table < 14; x_table++){
-//			tmp_table[y_table][x_table] = 2;
-//
-//		}
-//	}
 
 	switch (piece) {
 	case P_O:
-		drawSign(x, y, boja, ZNAK_KOCKICA);
-		drawSign(x-1, y, boja, ZNAK_KOCKICA);
-		drawSign(x, y-1, boja, ZNAK_KOCKICA);
-		drawSign(x-1, y-1, boja, ZNAK_KOCKICA);
-
-/*		tmp_table[y-7][x+2] = 2;
-		tmp_table[y-7][x+2-1] = 2;
-		tmp_table[y-7-1][x+2] = 2;
-		tmp_table[y-7-1][x+2-1] = 2;*/
+		drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+		drawSignToScreen(x-1, y, boja, ZNAK_KOCKICA);
+		drawSignToScreen(x, y-1, boja, ZNAK_KOCKICA);
+		drawSignToScreen(x-1, y-1, boja, ZNAK_KOCKICA);
 
 		break;
 
 	case P_I:
 		switch(rot){
 		case R_0:
-			drawSign(x-2, y, boja, ZNAK_KOCKICA);
-			drawSign(x-1, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y, boja, ZNAK_KOCKICA);
-//			tmp_table[y-7][x+2-2] = 2;
-//			tmp_table[y-7][x+2-1] = 2;
-//			tmp_table[y-7][x+2] = 2;
-//			tmp_table[y-7][x+2+1] = 2;
+			drawSignToScreen(x-2, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x-1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y, boja, ZNAK_KOCKICA);
 
 			break;
 		case R_1:
-			drawSign(x, y-2, boja, ZNAK_KOCKICA);
-			drawSign(x, y-1, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y+1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y-2, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y+1, boja, ZNAK_KOCKICA);
 			break;
 		}
 		break;
@@ -261,21 +276,18 @@ void drawPeace(int table_x, int table_y, int x, int y, pieces_t piece, rotation_
 	case P_Z:
 		switch(rot){
 		case R_0:
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y-1, boja, ZNAK_KOCKICA);
-			drawSign(x-1, y-1, boja, ZNAK_KOCKICA);
-//			tmp_table[y-7][x+2] = 2;
-//			tmp_table[y-7][x+2+1] = 2;
-//			tmp_table[y-7-1][x+2] = 2;
-//			tmp_table[y-7-1][x+2-1] = 2;
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x-1, y-1, boja, ZNAK_KOCKICA);
+
 
 			break;
 		case R_1:
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y+1, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y+1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y-1, boja, ZNAK_KOCKICA);
 			break;
 		}
 		break;
@@ -283,21 +295,18 @@ void drawPeace(int table_x, int table_y, int x, int y, pieces_t piece, rotation_
 	case P_S:
 		switch(rot){
 		case R_0:
-			drawSign(x-1, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y-1, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y-1, boja, ZNAK_KOCKICA);
-//			tmp_table[y-7][x+2-1] = 2;
-//			tmp_table[y-7][x+2] = 2;
-//			tmp_table[y-7-1][x+2] = 2;
-//			tmp_table[y-7-1][x+2+1] = 2;
+			drawSignToScreen(x-1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y-1, boja, ZNAK_KOCKICA);
+
 
 			break;
 		case R_1:
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y-1, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y+1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y+1, boja, ZNAK_KOCKICA);
 			break;
 		}
 		break;
@@ -306,33 +315,29 @@ void drawPeace(int table_x, int table_y, int x, int y, pieces_t piece, rotation_
 	case P_J:
 		switch(rot){
 		case R_0:
-			drawSign(x-1, y-1, boja, ZNAK_KOCKICA);
-			drawSign(x-1, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y, boja, ZNAK_KOCKICA);
-//			tmp_table[y-7-1][x+2-1] = 2;
-//			tmp_table[y-7][x+2-1] = 2;
-//			tmp_table[y-7][x+2] = 2;
-//			tmp_table[y-7][x+2+1] = 2;
+			drawSignToScreen(x-1, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x-1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y, boja, ZNAK_KOCKICA);
 
 			break;
 		case R_1:
-			drawSign(x, y-1, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y+1, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y+1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y-1, boja, ZNAK_KOCKICA);
 			break;
 		case R_2:
-			drawSign(x-1, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y+1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x-1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y+1, boja, ZNAK_KOCKICA);
 			break;
 		case R_3:
-			drawSign(x-1, y+1, boja, ZNAK_KOCKICA);
-			drawSign(x, y-1, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y+1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x-1, y+1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y+1, boja, ZNAK_KOCKICA);
 			break;
 
 		}
@@ -342,33 +347,30 @@ void drawPeace(int table_x, int table_y, int x, int y, pieces_t piece, rotation_
 	case P_L:
 		switch(rot){
 		case R_0:
-			drawSign(x-1, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y-1, boja, ZNAK_KOCKICA);
-//			tmp_table[y-7][x+2-1] = 2;
-//			tmp_table[y-7][x+2] = 2;
-//			tmp_table[y-7][x+2+1] = 2;
-//			tmp_table[y-7-1][x+2+1] = 2;
+			drawSignToScreen(x-1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y-1, boja, ZNAK_KOCKICA);
+
 
 			break;
 		case R_1:
-			drawSign(x, y-1, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y+1, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y+1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y+1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y+1, boja, ZNAK_KOCKICA);
 			break;
 		case R_2:
-			drawSign(x-1, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y, boja, ZNAK_KOCKICA);
-			drawSign(x-1, y+1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x-1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x-1, y+1, boja, ZNAK_KOCKICA);
 			break;
 		case R_3:
-			drawSign(x-1, y-1, boja, ZNAK_KOCKICA);
-			drawSign(x, y-1, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y+1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x-1, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y+1, boja, ZNAK_KOCKICA);
 			break;
 		}
 		break;
@@ -377,33 +379,30 @@ void drawPeace(int table_x, int table_y, int x, int y, pieces_t piece, rotation_
 	case P_T:
 		switch(rot){
 		case R_0:
-			drawSign(x, y-1, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x-1, y, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y, boja, ZNAK_KOCKICA);
-//			tmp_table[y-7-1][x+2] = 2;
-//			tmp_table[y-7][x+2] = 2;
-//			tmp_table[y-7][x+2-1] = 2;
-//			tmp_table[y-7][x+2+1] = 2;
+			drawSignToScreen(x, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x-1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y, boja, ZNAK_KOCKICA);
+
 
 			break;
 		case R_1:
-			drawSign(x, y-1, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y+1, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y+1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y, boja, ZNAK_KOCKICA);
 			break;
 		case R_2:
-			drawSign(x-1, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x+1, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y+1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x-1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x+1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y+1, boja, ZNAK_KOCKICA);
 			break;
 		case R_3:
-			drawSign(x-1, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y-1, boja, ZNAK_KOCKICA);
-			drawSign(x, y, boja, ZNAK_KOCKICA);
-			drawSign(x, y+1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x-1, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y-1, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y, boja, ZNAK_KOCKICA);
+			drawSignToScreen(x, y+1, boja, ZNAK_KOCKICA);
 			break;
 		}
 		break;
@@ -412,186 +411,282 @@ void drawPeace(int table_x, int table_y, int x, int y, pieces_t piece, rotation_
 	}
 }
 
-int peace0_x = 4;
-int peace0_y = 4;
-pieces_t piece;
-int start_flag=1;
+void drawSign(int x, int y){
+	// Drawing sign to tmp_table.
+	tmp_table[y][x] = 2; //bilo je 3,ali ako su ovde znaci koji trebaju tek da padaju zar nisu 2????
+}
+
+void drawPiece(const piece_gameplay_struct_t* piece){
 
 
+	switch (piece->type) {
 
-void drawPeaceToTable(u8 tmp_table1[16][8],u8 tbl1[16][8]){ // Kopirali u table ono sto nam je u temp table koju inace iscrtavamo, prebacili u table sve na dvojke, ocistili temp radi naredne itearcije i prebacili iz table u temp dvojke
+		case P_O:
+			drawSign(piece->x, piece->y);
+			drawSign(piece->x-1, piece->y);
+			drawSign(piece->x, piece->y-1);
+			drawSign(piece->x-1, piece->y-1);
 
-	int i;
+			break;
 
+		case P_I:
+			switch(piece->rot){
+			case R_0:
+			case R_2:
+				drawSign(piece->x-2, piece->y);
+				drawSign(piece->x-1,piece->y);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x+1, piece->y);
 
-	for (int y_table = 0;  y_table < 16; y_table++){
-		for (int x_table = 0; x_table < 8; x_table++){
-			table1[y_table][x_table] = tmp_table[y_table][x_table];
-
-			if(tmp_table[y_table][x_table] != 0)
-				xil_printf("aaaa = %d\n\r", tmp_table[y_table][x_table]);
-		}
-		//xil_printf("\n\r");
-	}
-
-	for (int y_table = 0; y_table < 16; y_table++){
-		for (int x_table = 0; x_table < 8; x_table++){
-			if (table1[y_table][x_table] == 2){
-				table1[y_table][x_table] = 3;
+				break;
+			case R_1:
+			case R_3:
+				drawSign(piece->x, piece->y-2);
+				drawSign(piece->x, piece->y-1);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x, piece->y+1);
+				break;
 			}
+			break;
+
+
+		case P_Z:
+			switch(piece->rot){
+			case R_0:
+			case R_2:
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x+1, piece->y);
+				drawSign(piece->x, piece->y-1);
+				drawSign(piece->x-1, piece->y-1);
+
+
+				break;
+			case R_1:
+			case R_3:
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x, piece->y+1);
+				drawSign(piece->x+1, piece->y);
+				drawSign(piece->x+1, piece->y-1);
+				break;
+			}
+			break;
+
+		case P_S:
+			switch(piece->rot){
+			case R_0:
+			case R_2:
+				drawSign(piece->x-1, piece->y);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x, piece->y-1);
+				drawSign(piece->x+1, piece->y-1);
+
+
+				break;
+			case R_1:
+			case R_3:
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x, piece->y-1);
+				drawSign(piece->x+1, piece->y);
+				drawSign(piece->x+1, piece->y+1);
+				break;
+			}
+			break;
+
+
+		case P_J:
+			switch(piece->rot){
+			case R_0:
+				drawSign(piece->x-1, piece->y-1);
+				drawSign(piece->x-1, piece->y);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x+1, piece->y);
+
+				break;
+			case R_1:
+				drawSign(piece->x, piece->y-1);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x, piece->y+1);
+				drawSign(piece->x+1, piece->y-1);
+				break;
+			case R_2:
+				drawSign(piece->x-1, piece->y);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x+1, piece->y);
+				drawSign(piece->x+1, piece->y+1);
+				break;
+			case R_3:
+				drawSign(piece->x-1, piece->y+1);
+				drawSign(piece->x, piece->y-1);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x, piece->y+1);
+				break;
+
+			}
+			break;
+
+
+		case P_L:
+			switch(piece->rot){
+			case R_0:
+				drawSign(piece->x-1, piece->y);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x+1, piece->y);
+				drawSign(piece->x+1, piece->y-1);
+
+
+				break;
+			case R_1:
+				drawSign(piece->x, piece->y-1);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x, piece->y+1);
+				drawSign(piece->x+1,piece->y+1);
+				break;
+			case R_2:
+				drawSign(piece->x-1, piece->y);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x+1, piece->y);
+				drawSign(piece->x-1, piece->y+1);
+				break;
+			case R_3:
+				drawSign(piece->x-1, piece->y-1);
+				drawSign(piece->x, piece->y-1);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x, piece->y+1);
+				break;
+			}
+			break;
+
+
+		case P_T:
+			switch(piece->rot){
+			case R_0:
+				drawSign(piece->x, piece->y-1);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x-1, piece->y);
+				drawSign(piece->x+1,piece->y);
+
+
+				break;
+			case R_1:
+				drawSign(piece->x, piece->y-1);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x, piece->y+1);
+				drawSign(piece->x+1, piece->y);
+				break;
+			case R_2:
+				drawSign(piece->x-1, piece->y);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x+1, piece->y);
+				drawSign(piece->x, piece->y+1);
+				break;
+			case R_3:
+				drawSign(piece->x-1, piece->y);
+				drawSign(piece->x, piece->y-1);
+				drawSign(piece->x, piece->y);
+				drawSign(piece->x, piece->y+1);
+				break;
+			}
+			break;
+
+
+
 		}
-	}
 
-	for (int y_table = 0; y_table < 16; y_table++){
-		for (int x_table = 0; x_table < 8; x_table++){
-			tmp_table[y_table][x_table] = 0;
-
-		}
-	}
-
-
-	for (int y_table = 0; y_table < 16; y_table++){
-		for (int x_table = 0; x_table < 8; x_table++){
-			tmp_table[y_table][x_table] = table1[y_table][x_table];
-
-		}
-	}
-
-#if 0
-	for(i = 0; i < 8; i++) {
-			xil_printf("%d", tbl1[peace0_y][i]);
-		}
-		xil_printf("\n\r");
-#endif
 }
 
-bool testCollision(u8 table[16][8]){
-	int i;
-	if (peace0_y == 19 || table[peace0_y][peace0_x] == 3){ // ovaj drugi uslov je stavljao ispod ifa
 
-			return true;
-		}
-		return false;
+void fallPeace(piece_gameplay_struct_t* piece){
+	piece->y++;
 }
 
-void fallPeaces(void){
-	peace0_y++;
-//	drawPeaceToTable(tmp_table,table1);
 
-	if (testCollision(tmp_table)){
-		xil_printf("tmp_tbl=%d\n\r", tmp_table[19][4]);
-		//drawPeaceToTable(tmp_table, table1);
-		table1[peace0_y][peace0_x] = tmp_table[peace0_y][peace0_x];
 
-		xil_printf("table1=%d\n\r", table1[19][4]);
-		piece=rand()%7;
-		peace0_y=4;
-		drawNextInTable();
+bool checkCollision(){
+	// Go to tmp_table and check if there is any 3 above 2.
+	int i,j;
+	for (i = 0; i < 16; i ++){
+			for (j = 0; j < 16; j++){
+				if (tmp_table[i+1][j+1] == 3){
+						return true;
+					}
+				}
+
+			}
+
+	return false;
+
+}
+
+void updateTable(u8 table[16][8]){
+	int i,j;
+	for (i = 0; i < 16; i ++){
+		for (j = 0; j < 16; j++){
+				table[i][j] = tmp_table[i][j];
+			}
+
+		}
+
+	for (i = 0; i < 16; i ++){
+			for (j = 0; j < 16; j++){
+					if (table[i][j] == 2){
+						table[i][j] = 3;
+						}
+
+					}
+
 	}
-	else{
+}
 
-	}
+
+void spawnNewPiece(piece_gameplay_struct_t* piece) {
+
+	piece->type = rand()%7;
+	piece->x = 4;
+	piece->y = 4;
 
 
 }
 
 void testPeaces(void) {
-	drawPeace(0, 0, 4, 4, P_O, R_0);
-	drawPeace(5, 0, 4, 4, P_I, R_0);
-	drawPeace(10, 0, 4, 4, P_I, R_1);
-	drawPeace(15, 0, 4, 4, P_S, R_0);
-	drawPeace(20, 0, 4, 4, P_S, R_1);
-	drawPeace(25, 0, 4, 4, P_Z, R_0);
-	drawPeace(30, 0, 4, 4, P_Z, R_1);
-	drawPeace(0, 5, 4, 4, P_J, R_0);
-	drawPeace(5, 5, 4, 4, P_J, R_1);
-	drawPeace(10, 5, 4, 4, P_J, R_2);
-	drawPeace(15, 5, 4, 4, P_J, R_3);
-	drawPeace(20, 5, 4, 4, P_L, R_0);
-	drawPeace(25, 5, 4, 4, P_L, R_1);
-	drawPeace(30, 5, 4, 4, P_L, R_2);
-	drawPeace(0, 10, 4, 4, P_L, R_3);
-	drawPeace(5, 10, 4, 4, P_T, R_0);
-	drawPeace(10, 10, 4, 4, P_T, R_1);
-	drawPeace(15, 10, 4, 4, P_T, R_2);
-	drawPeace(20, 10, 4, 4, P_T, R_3);
+	drawPieceToScreen(0, 0, 4, 4, P_O, R_0);
+	drawPieceToScreen(5, 0, 4, 4, P_I, R_0);
+	drawPieceToScreen(10, 0, 4, 4, P_I, R_1);
+	drawPieceToScreen(15, 0, 4, 4, P_S, R_0);
+	drawPieceToScreen(20, 0, 4, 4, P_S, R_1);
+	drawPieceToScreen(25, 0, 4, 4, P_Z, R_0);
+	drawPieceToScreen(30, 0, 4, 4, P_Z, R_1);
+	drawPieceToScreen(0, 5, 4, 4, P_J, R_0);
+	drawPieceToScreen(5, 5, 4, 4, P_J, R_1);
+	drawPieceToScreen(10, 5, 4, 4, P_J, R_2);
+	drawPieceToScreen(15, 5, 4, 4, P_J, R_3);
+	drawPieceToScreen(20, 5, 4, 4, P_L, R_0);
+	drawPieceToScreen(25, 5, 4, 4, P_L, R_1);
+	drawPieceToScreen(30, 5, 4, 4, P_L, R_2);
+	drawPieceToScreen(0, 10, 4, 4, P_L, R_3);
+	drawPieceToScreen(5, 10, 4, 4, P_T, R_0);
+	drawPieceToScreen(10, 10, 4, 4, P_T, R_1);
+	drawPieceToScreen(15, 10, 4, 4, P_T, R_2);
+	drawPieceToScreen(20, 10, 4, 4, P_T, R_3);
 
 
 }
-void fill3(pieces_t piece, u8 table[16][8],int x_table, int y_table){
 
-	switch (piece){
+void drawPieceToScreens(void) {
 
-		case P_O:
-				table[y_table][x_table] = 3;
-				table[y_table][x_table-1] = 3;
-				table[y_table-1][x_table] = 3;
-				table[y_table-1][x_table-1] = 3;
-				break;
-		case P_I:
-				table[y_table][x_table-2] = 3;
-				table[y_table][x_table-1] = 3;
-				table[y_table][x_table] = 3;
-				table[y_table][x_table+1] = 3;
-				break;
-
-		case P_Z:
-				table[y_table][x_table] = 3;
-				table[y_table][x_table+1] = 3;
-				table[y_table-1][x_table] = 3;
-				table[y_table-1][x_table-1] = 3;
-				break;
-
-		case P_S:
-				table[y_table][x_table-1] = 3;
-				table[y_table][x_table] = 3;
-				table[y_table-1][x_table] = 3;
-				table[y_table-1][x_table+1] = 3;
-				break;
-
-		case P_J:
-				table[y_table-1][x_table-1] = 3;
-				table[y_table][x_table-1] = 3;
-				table[y_table][x_table] = 3;
-				table[y_table][x_table+1] = 3;
-				break;
-
-		case P_L:
-				table[y_table][x_table-1] = 3;
-				table[y_table][x_table] = 3;
-				table[y_table][x_table+1] = 3;
-				table[y_table-1][x_table+1] = 3;
-				break;
-		case P_T:
-				table[y_table-1][x_table] = 3;
-				table[y_table][x_table] = 3;
-				table[y_table][x_table-1] = 3;
-				table[y_table][x_table+1] = 3;
-				break;
-
-	}
+	drawPieceToScreen(6, 3, peace1_x, peace1_y, piece, R_0);
 
 }
 
-
-
-void drawPeaces(void) {
-
-	drawPeace(6, 3, peace0_x, peace0_y, piece, R_0);
-
-}
-
-void drawNext(pieces_t piece, rotation_t rot){
+void drawNext(piece_types_t piece, rotation_t rot){
 		drawTable_next(table_next,16,14);
-		drawPeace(18, 15, 0, 0, piece, R_0);
+		drawPieceToScreen(18, 15, 0, 0, piece, R_0);
 	}
 
 void drawNextInTable(void){
 
 	drawNext(piece, R_0);
 	for(int i = 0; i<10000;i++){}
-	drawPeace(6, 3, peace0_x, peace0_y, piece, R_0);
-	//fill3(piece, tmp_table, peace0_x, val);
+	drawPieceToScreen(6, 3, peace1_x, peace1_y, piece, R_0);
 
 
 }
@@ -674,23 +769,34 @@ void drawBackground(){
 		}
 }
 
-void drawTmpTable(){
+void drawToScreen(int table_x, int table_y){
 	for(int y=0; y<16; y++)
 		for(int x=0; x<8; x++){
-			set_cursor(y*40+x);
 			int boja = 0;
 			int znak = 0;
-			switch(tmp_table[y][x]){
-				case 0: znak = BACKGROUND_ZNAK;    break;
-				case 2: znak = ZNAK_KOCKICA   ;    break;
-				case 3: znak = ZNAK_KOCKICA1  ;   break;
+			switch (tmp_table[y][x]) {
+			case 0:
+				boja = 0;
+				znak = BACKGROUND_ZNAK;
+				break;
+			case 2:
+				boja = 1; //ZELENA
+				znak = ZNAK_KOCKICA;
+				break;
+			case 3:
+				boja = 2;//PLAVA
+				znak = ZNAK_KOCKICA1;
+				break;
 			}
-			print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
+			 drawSignToScreen(table_x+x, table_y+y, boja, znak);
 		}
 }
 
 // ---------------------------  DRAWING GAME TABLE ---------------------------------------
 // on every interrupt call entire game table is drawn
+
+
+
 
 void my_timer_interrupt_handler(void * baseaddr_p) {
 	//drawing screen and counting interrupts.
@@ -703,13 +809,41 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 #if TEST_MODE
 	testPeaces();
 #else
-	drawMap();
-	drawNextInTable();
+
+	//drawPiece(&pieces[0]);
+	// Fall pieces on every second.
 	if(frame_cnt % 25 == 0){
-		fallPeaces();
+		// Just increment piece position. Nothing else.
+		fallPeace(&pieces[0]);
 
 	}
 
+
+
+
+	// Doing table1.
+
+	// Draw (copy) table1 to tmp_table.
+	copyTable(table1);
+
+	// Draw piece1 to tmp_table.
+	drawPiece(&pieces[0]);
+
+	// Check collision between 2 and 3 in tmp_table.
+	if(checkCollision()){
+		// There is collision.
+		// Copy tmp_table to table1, with converting all 3 to 2.
+		updateTable(table1);
+
+		// Spawn new piece1.
+		spawnNewPiece(&pieces[0]);
+	}
+
+	// Draw tmp_table to screen.
+	drawToScreen(6, 6);
+
+
+	// Doing table2.
 
 #endif
 }
@@ -772,6 +906,8 @@ int main() {
 	drawBackground();
 	drawStaticGameMessages();
 
+	spawnNewPiece(&pieces[0]);
+	//spawnNewPiece(&pieces[1]);
 
 #endif
 
