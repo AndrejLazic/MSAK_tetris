@@ -28,25 +28,14 @@
 #define MIDDLE  27
 #define HIGH    14
 
+#define UP 	   0b00010000
+#define DOWN   0b00000001
+#define LEFT   0b00001000
+#define RIGHT  0b00000010
+#define CENTER 0b00000100
 
 
-XIntc Intc;
-enum Stanja {
-		ON,
-		OFF,
-		PADANJE,
-		SREDJIVANJE,
-		SREDJIVANJE_PADANJE,
-		KRAJ
-	} stanje;
 
-unsigned char sNEXT[] = "NEXT";
-//unsigned char sDR_MARIO[] = "DR MARIO";
-unsigned char sLEVEL[] = "LEVEL";
-unsigned char sPlayer2[] = "PLAYER2";
-unsigned char sPlayer1[] = "PLAYER1";
-unsigned char sSCORE1[] = "SCORE1";
-unsigned char sSCORE2[] = "SCORE2";
 
 unsigned char backround[30][40]={
 				{1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1},
@@ -186,6 +175,19 @@ u8 table_next[4][4] = {
 };
 
 
+XIntc Intc;
+
+unsigned char debouncer = 0;
+unsigned char sNEXT[] = "NEXT";
+//unsigned char sDR_MARIO[] = "DR MARIO";
+unsigned char sLEVEL[] = "LEVEL";
+unsigned char sPlayer2[] = "PLAYER2";
+unsigned char sPlayer1[] = "PLAYER1";
+unsigned char sSCORE1[] = "SCORE1";
+unsigned char sSCORE2[] = "SCORE2";
+int rotationCounter = 0;
+
+char lastKey = 'n';
 
 typedef enum {P_O, P_I, P_S, P_Z, P_L, P_J, P_T} piece_types_t;
 typedef enum {R_0, R_1, R_2, R_3} rotation_t;
@@ -207,6 +209,113 @@ int start_flag=1;
 
 Xuint32 addr = XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR;
 
+
+
+
+char getPressedKey(){
+
+	char pressedKey;
+	int button = Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR);
+	if ((button & UP) == 0){
+		pressedKey = 'u';
+	}
+	else if ((button & DOWN) == 0){
+		pressedKey = 'd';
+	}else if ((button & RIGHT) == 0){
+		pressedKey = 'r';
+	}else if ((button & LEFT) == 0){
+		pressedKey = 'l';
+	}else if ((button & CENTER) == 0){
+		pressedKey = 'c';
+	}
+
+	if (lastKey != pressedKey){
+		lastKey = pressedKey;
+		return pressedKey;
+	}
+	else {
+
+		return 'n';
+	}
+
+}
+
+
+void movingBlocks(piece_gameplay_struct_t* piece){
+
+	char pressedKey = getPressedKey();
+
+	switch(pressedKey){
+		case 'r':
+			if (piece->x == 5){
+				piece->x = 5;
+
+			}else{
+			piece->x++;
+			}
+			break;
+		case 'l':
+			piece->x++;
+			break;
+		case 'c':
+			rotationCounter++;
+			drawPieceWithRot(piece);
+			break;
+
+
+	}
+
+}
+
+
+void drawPieceWithRot(piece_gameplay_struct_t* piece){
+
+	switch(piece->type){
+		case P_O:
+			drawPiece(piece);
+			break;
+		case P_S:
+		case P_Z:
+		case P_I:
+			if (rotationCounter % 2 == 1)
+			{
+				piece->rot = R_1;
+				drawPiece(piece);
+			}else if(rotationCounter % 2 == 0){
+				piece->rot = R_0;
+				drawPiece(piece);
+			}
+			break;
+		case P_J:
+		case P_L:
+		case P_T:
+			if (rotationCounter % 4 == 1)
+			{
+				piece->rot = R_1;
+				drawPiece(piece);
+			}else if (rotationCounter % 4 == 2)
+			{
+				piece->rot = R_2;
+				drawPiece(piece);
+			}
+			else if (rotationCounter % 4 == 3)
+			{
+				piece->rot = R_3;
+				drawPiece(piece);
+			}
+			else if (rotationCounter % 4 == 0)
+			{
+				piece->rot = R_0;
+				drawPiece(piece);
+			}
+			break;
+
+
+
+	}
+
+
+}
 
 
 
@@ -621,6 +730,7 @@ void drawPiece(const piece_gameplay_struct_t* piece){
 
 void fallPeace(piece_gameplay_struct_t* piece){
 	piece->y++;
+
 }
 
 
@@ -724,10 +834,10 @@ void drawNext(piece_gameplay_struct_t* piece){
 	}
 
 void drawNextInTable(piece_gameplay_struct_t* piece){
-	//pieces[0].type = rand()%7;
+
 
 	drawNext(piece);
-	//drawPieceToScreen(6, 3, peace1_x, peace1_y, piece, R_0);
+	//
 
 
 }
@@ -850,27 +960,25 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 #if TEST_MODE
 	testPeaces();
 #else
-
-
+	movingBlocks(&pieces[0]);
 	// Fall pieces on every second.
-	if(frame_cnt % 25 == 0){
+	if(frame_cnt % 50 == 0){
 		// Just increment piece position. Nothing else.
 		fallPeace(&pieces[0]);
-
 	}
 
 
-
 	// Doing table1.
+
 
 	// Draw (copy) table1 to tmp_table.
 	copyTable(table1);
 	// Draw piece1 to tmp_table.
 	drawPiece(&pieces[0]);
 
-
-
 	drawNextInTable(&pieces[0]);
+
+
 	// Check collision between 2 and 3 in tmp_table.
 	if(checkCollision(tmp_table)){
 		// There is collision.
@@ -884,8 +992,10 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 
 
 		// Spawn new piece1.
+
 		spawnNewPiece(&pieces[0]);
 
+		rotationCounter = 0;
 
 	}
 
