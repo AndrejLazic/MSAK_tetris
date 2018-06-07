@@ -239,13 +239,8 @@ typedef struct {
 	rotation_t rot;
 } piece_gameplay_struct_t;
 
-typedef struct {
-	u8 minX;
-	u8 maxX;
-}min_max_struct;
 
 
-min_max_struct minMax;
 
 piece_gameplay_struct_t pieces[2];
 
@@ -290,14 +285,18 @@ char getPressedKey(){
 
 void movingBlocks(piece_gameplay_struct_t* piece){
 
-	 min_max_struct* minMax;
 	char pressedKey = getPressedKey();
+	int minX;
 
-	retMinMax(minMax, piece);
+	minX = returnMin(piece);
 
 	switch(pressedKey){
 		case 'l':
-			if (minMax->minX == -2){
+
+			if ((piece->x) - minX -2 > 0){
+				piece->x--;
+				}
+			/*if (minMax->minX == -2){
 				if (piece->x-2 > 0){
 					piece->x--;
 				}
@@ -309,12 +308,10 @@ void movingBlocks(piece_gameplay_struct_t* piece){
 				if (piece->x > 0){
 					piece->x--;
 				}
-			}
+			}*/
 			break;
 		case 'r':
-			if (piece->x+1 < 7) {
 				piece->x++;
-			}
 			break;
 		case 'c':
 			piece->rot = (piece->rot + 1) % 4;
@@ -325,7 +322,161 @@ void movingBlocks(piece_gameplay_struct_t* piece){
 
 }
 
+int returnMin(piece_gameplay_struct_t* piece){
 
+	int minX;
+	switch (piece->type) {
+
+		case P_O:
+			minX = -1;
+
+		break;
+
+		case P_I:
+			switch(piece->rot){
+			case R_0:
+			case R_2:
+
+				minX = -2;
+
+			break;
+
+			case R_1:
+			case R_3:
+				minX = 0;
+
+
+			break;
+			}
+		break;
+
+
+		case P_Z:
+			switch(piece->rot){
+			case R_0:
+			case R_2:
+				minX = -1;
+
+
+			break;
+
+			case R_1:
+			case R_3:
+				minX = 0;
+
+
+			break;
+			}
+		break;
+
+		case P_S:
+			switch(piece->rot){
+			case R_0:
+			case R_2:
+				minX = -1;
+
+
+			break;
+
+			case R_1:
+			case R_3:
+				minX = 0;
+
+
+			break;
+			}
+		break;
+
+
+		case P_J:
+			switch(piece->rot){
+			case R_0:
+				minX = -1;
+
+
+			break;
+
+			case R_1:
+				minX = 0;
+
+
+			break;
+
+			case R_2:
+				minX = -1;
+
+
+			break;
+
+			case R_3:
+				minX = -1;
+
+
+			break;
+
+			}
+		break;
+
+
+		case P_L:
+			switch(piece->rot){
+			case R_0:
+				minX = -1;
+
+
+			break;
+
+			case R_1:
+				minX = 0;
+
+
+			break;
+
+			case R_2:
+				minX = -1;
+
+			break;
+
+			case R_3:
+				minX = -1;
+
+
+			break;
+			}
+		break;
+
+
+		case P_T:
+			switch(piece->rot){
+			case R_0:
+				minX = -1;
+
+
+			break;
+
+			case R_1:
+				minX = 0;
+
+			break;
+
+
+			case R_2:
+				minX = -1;
+
+			break;
+			case R_3:
+				minX = -1;
+
+			break;
+			}
+		break;
+
+
+
+		}
+	return minX;
+
+}
 
 
 void drawSignToScreen(int x, int y, int boja, int znak){
@@ -558,7 +709,7 @@ void drawSign(int x, int y){
 	tmp_table[y][x] = 2;
 }
 
-void retMinMax(min_max_struct* minMax, piece_gameplay_struct_t* piece){
+/*void retMinMax(min_max_struct* minMax, piece_gameplay_struct_t* piece){
 
 
 
@@ -728,7 +879,7 @@ void retMinMax(min_max_struct* minMax, piece_gameplay_struct_t* piece){
 
 	return (&minMax);
 
-}
+}*/
 
 
 void drawPiece(const piece_gameplay_struct_t* piece){
@@ -925,8 +1076,8 @@ bool checkCollision(u8 table[16][8]){ // OVDJE SMO DODALI OVO KAO PARAMETAR INAC
 				if(table[y-1][x] == 2){
 					return true;
 				}
-			}
 
+			}
 			// 2 is on the bottom.
 			if(y == 15){
 				if(table[y][x] == 2){
