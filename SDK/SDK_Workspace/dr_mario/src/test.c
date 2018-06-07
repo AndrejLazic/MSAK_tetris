@@ -293,6 +293,8 @@ void movingBlocks(piece_gameplay_struct_t* piece){
 	 min_max_struct* minMax;
 	char pressedKey = getPressedKey();
 
+	retMinMax(minMax, piece);
+
 	switch(pressedKey){
 		case 'l':
 			if (minMax->minX == -2){
@@ -556,9 +558,9 @@ void drawSign(int x, int y){
 	tmp_table[y][x] = 2;
 }
 
-min_max_struct* retMinMax(const piece_gameplay_struct_t* piece){
+void retMinMax(min_max_struct* minMax, piece_gameplay_struct_t* piece){
 
-	min_max_struct* minMax;
+
 
 	switch (piece->type) {
 
@@ -714,6 +716,16 @@ min_max_struct* retMinMax(const piece_gameplay_struct_t* piece){
 
 
 		}
+	//
+
+
+
+
+
+
+
+
+
 	return (&minMax);
 
 }
