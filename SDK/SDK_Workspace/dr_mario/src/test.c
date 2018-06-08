@@ -218,14 +218,16 @@ XIntc Intc;
 
 unsigned char debouncer = 0;
 unsigned char sNEXT[] = "NEXT";
-//unsigned char sDR_MARIO[] = "DR MARIO";
 unsigned char sLEVEL[] = "LEVEL";
 unsigned char sPlayer2[] = "PLAYER2";
 unsigned char sPlayer1[] = "PLAYER1";
 unsigned char sSCORE1[] = "SCORE1";
 unsigned char sSCORE2[] = "SCORE2";
-int rotationCounter;
+
 int boja1;
+int valOfY = 0;
+
+
 
 char lastKey = 'n';
 
@@ -286,32 +288,18 @@ char getPressedKey(){
 void movingBlocks(piece_gameplay_struct_t* piece){
 
 	char pressedKey = getPressedKey();
-	int minX;
 
-	minX = returnMin(piece);
 
 	switch(pressedKey){
 		case 'l':
 
-			if ((piece->x) - minX -2 > 0){
 				piece->x--;
-				}
-			/*if (minMax->minX == -2){
-				if (piece->x-2 > 0){
-					piece->x--;
-				}
-			}else if(minMax->minX == -1){
-					if (piece->x-1 > 0){
-						piece->x--;
-					}
-			}else if (minMax->minX == 0){
-				if (piece->x > 0){
-					piece->x--;
-				}
-			}*/
+
 			break;
 		case 'r':
+
 				piece->x++;
+
 			break;
 		case 'c':
 			piece->rot = (piece->rot + 1) % 4;
@@ -478,6 +466,162 @@ int returnMin(piece_gameplay_struct_t* piece){
 
 }
 
+
+int returnMax(piece_gameplay_struct_t* piece){
+
+	int maxX;
+	switch (piece->type) {
+
+		case P_O:
+			maxX = 0;
+
+		break;
+
+		case P_I:
+			switch(piece->rot){
+			case R_0:
+			case R_2:
+
+				maxX = 1;
+
+			break;
+
+			case R_1:
+			case R_3:
+				maxX = 0;
+
+
+			break;
+			}
+		break;
+
+
+		case P_Z:
+			switch(piece->rot){
+			case R_0:
+			case R_2:
+				maxX = 1;
+
+
+			break;
+
+			case R_1:
+			case R_3:
+				maxX = 1;
+
+
+			break;
+			}
+		break;
+
+		case P_S:
+			switch(piece->rot){
+			case R_0:
+			case R_2:
+				maxX = 1;
+
+
+			break;
+
+			case R_1:
+			case R_3:
+				maxX = 1;
+
+
+			break;
+			}
+		break;
+
+
+		case P_J:
+			switch(piece->rot){
+			case R_0:
+				maxX = 1;
+
+
+			break;
+
+			case R_1:
+				maxX = 1;
+
+
+			break;
+
+			case R_2:
+				maxX = 1;
+
+
+			break;
+
+			case R_3:
+				maxX = 0;
+
+
+			break;
+
+			}
+		break;
+
+
+		case P_L:
+			switch(piece->rot){
+			case R_0:
+				maxX = 1;
+
+
+			break;
+
+			case R_1:
+				maxX = 1;
+
+
+			break;
+
+			case R_2:
+				maxX = 1;
+
+			break;
+
+			case R_3:
+				maxX = 0;
+
+
+			break;
+			}
+		break;
+
+
+		case P_T:
+			switch(piece->rot){
+			case R_0:
+				maxX = 1;
+
+
+			break;
+
+			case R_1:
+				maxX = 1;
+
+			break;
+
+
+			case R_2:
+				maxX = 1;
+
+			break;
+			case R_3:
+				maxX = 0;
+
+			break;
+			}
+		break;
+
+
+
+		}
+	return maxX;
+
+}
 
 void drawSignToScreen(int x, int y, int boja, int znak){
 	set_cursor(y*40+x);
@@ -1067,6 +1211,37 @@ void fallPeace(piece_gameplay_struct_t* piece){
 }
 
 
+void clearing(piece_gameplay_struct_t* piece){
+	int x,y;
+	for (x = 0; x < 8; x++){
+		table1[valOfY][x] = 0;
+
+	}
+
+
+
+	updateTable(tmp_table,table1);
+
+}
+
+void checkIfClear(piece_gameplay_struct_t* piece){
+	int counter;
+	for (int y = 0; y < 16; y++) {
+		for (int x = 0; x < 8; x++) {
+			if(table1[y][x] == 3){
+				counter++;
+				}
+			if (counter == 8){
+				     // clearuj ukoliko je kaunter prebrojao osam kockica za redom
+				valOfY =y;
+				clearing(piece);
+					}
+			}
+
+		counter = 0;
+	}
+
+}
 
 bool checkCollision(u8 table[16][8]){ // OVDJE SMO DODALI OVO KAO PARAMETAR INACE RADILI SA TMP TABLE
 	for (int y = 0; y < 16; y++) {
@@ -1113,7 +1288,6 @@ void updateTable(u8 table[16][8],u8 temp_table[16][8]) { // DODALI JEDAN PARAMET
 
 void spawnNewPiece(piece_gameplay_struct_t* piece) {
 
-	rotationCounter = 0;
 	piece->type = rand()%7;
 	piece->rot = R_0;
 	piece->x = 4;
@@ -1323,7 +1497,10 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 	// Doing table1.
 
 	// Draw (copy) table1 to tmp_table.
+	checkIfClear(&pieces[0]);
 	copyTable(table1);
+
+
 
 	// Draw piece1 to tmp_table.
 	drawPiece(&pieces[0]);
@@ -1336,11 +1513,9 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 
 
 		// check if game is over
-
-
-
 		// Copy tmp_table to table1, with converting all 3 to 2.
 		updateTable(table1,tmp_table);
+
 		if (checkGameOver(&pieces[0])){
 			drawGameOver();
 			return 0;
