@@ -107,3 +107,4 @@ xlnx_auto_0_xdb/
 
 !/pcores/*/netlist/*.ngc
 !/Docs/*.*
+!tetris.bit

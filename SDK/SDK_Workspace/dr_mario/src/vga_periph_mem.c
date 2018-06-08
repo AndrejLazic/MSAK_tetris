@@ -44,6 +44,7 @@ void print_string(Xuint32 BaseAddress, int boja, unsigned char string_s[], int l
 		if(znak >= 0x40){
 			znak -= 0x40;
 		}
+//		znak = 0x41;
 		zapis|=znak;
 		VGA_PERIPH_MEM_mWriteMemory(BaseAddress + TEXT_MEM_OFF + (cursor_position + i)*4, zapis);
 	}
@@ -56,6 +57,7 @@ void print_char(Xuint32 BaseAddress, int boja, unsigned char znak){
 	if(znak >= 0x40){
 		znak -= 0x40;
 	}
+
 	zapis|=znak;
 	VGA_PERIPH_MEM_mWriteMemory(BaseAddress + TEXT_MEM_OFF + cursor_position*4, zapis);
 }

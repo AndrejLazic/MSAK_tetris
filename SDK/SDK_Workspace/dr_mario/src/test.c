@@ -220,17 +220,15 @@ unsigned char debouncer = 0;
 unsigned char sNEXT[] = "NEXT";
 unsigned char sLEVEL[] = "LEVEL";
 unsigned char sPlayer2[] = "PLAYER2";
-unsigned char sPlayer1[] = "PLAYER1";
+unsigned char sPlayer1[] = "PLAYER10000";
 unsigned char sSCORE1[] = "SCORE1";
 unsigned char sSCORE2[] = "SCORE2";
 
-unsigned char sSCORE[5];
 
-int boja1;
-int valOfY;
-int k;
-int score;
-int scoreHelp;
+int valOfY = 0;
+
+
+
 
 char lastKey = 'n';
 
@@ -1215,27 +1213,13 @@ void fallPeace(piece_gameplay_struct_t* piece){
 
 
 void clearing(piece_gameplay_struct_t* piece){
-	int x,y,i;
-
+	int x,y;
 	for (x = 0; x < 8; x++){
 		table1[valOfY][x] = 0;
 
 	}
 
-	score++;
-	scoreHelp = score;
 
-	for (i = 0; i < 5; i++){
-		sSCORE[4-i] = (scoreHelp%10) + 0x30;
-		scoreHelp = scoreHelp/10;
-	}
-
-
-	/*for ( y = 0; y < valOfY - 1; y++) {
-		for ( x = 0; x < 8; x++) {
-			table1[y+1][x] = table1[y][x];
-		}
-	}*/
 
 	updateTable(tmp_table,table1);
 
@@ -1252,7 +1236,7 @@ void checkIfClear(piece_gameplay_struct_t* piece){
 				     // clearuj ukoliko je kaunter prebrojao osam kockica za redom
 				valOfY =y;
 				clearing(piece);
-				}
+					}
 			}
 
 		counter = 0;
@@ -1287,7 +1271,6 @@ void updateTable(u8 table[16][8],u8 temp_table[16][8]) { // DODALI JEDAN PARAMET
 	for (int y = 0; y < 16; y++) {
 		for (int x = 0; x < 8; x++) {
 			switch(temp_table[y][x]){
-
 			case 2:
 				table[y][x] = 3;
 				break;
@@ -1375,20 +1358,20 @@ void drawNextInTable(piece_types_t piece_t){
 // ----------------------------------- CURRENT GAME STATISTICS -------------------------------
 // it draws game statistic: current level, number of viruses, current game speed and current score
 void drawGameState(){
-
+/*
 	//Score1
-	set_cursor(26*40 + 17);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, sSCORE, 5);
+	set_cursor(27*40 + 7);
+    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_score, 6);
 
     //Score2
-    //set_cursor(27*40 + 27);
-    //print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_score2, 6);
+    set_cursor(27*40 + 27);
+    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_score2, 6);
 
 
 	//LEVEL
-	//set_cursor(28*40 + 17);
-    //print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_lvl, 2);
-
+	set_cursor(28*40 + 17);
+    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_lvl, 2);
+*/
 
 }
 
@@ -1456,7 +1439,7 @@ void drawToScreen(int table_x, int table_y, u8 table[16][8]){
 			int znak = 0;
 			switch (table[y][x]) {
 			case 0:
-				boja = 0;
+				boja = 0; //0
 				znak = BACKGROUND_ZNAK;
 				break;
 			case 2:
@@ -1516,7 +1499,6 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 
 	// Draw (copy) table1 to tmp_table.
 	checkIfClear(&pieces[0]);
-	drawGameState();
 	copyTable(table1);
 
 
@@ -1619,10 +1601,6 @@ int main() {
 
 	spawnNewPiece(&pieces[0]);
 	//spawnNewPiece(&pieces[1]);
-
-	for ( k= 0; k < 5; k++){
-		sSCORE[k] = '0';
-	}
 
 #endif
 
