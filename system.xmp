@@ -25,5 +25,5 @@ EnableParTimingError: 1
 ShowLicenseDialog: 1
 BInfo: 
 Processor: microblaze_0
-ElfImp: SDK/SDK_Workspace/dr_mario/Debug/dr_mario.elf
+ElfImp: 
 ElfSim: 

@@ -11,9 +11,6 @@
 
 #define TEST_MODE 0
 
-
-
-
 #define ZNAK_KOCKICA        0x1B
 #define ZNAK_KOCKICA1       0x26
 #define VERTIKALNA_IVICA 	0x2D
@@ -33,9 +30,6 @@
 #define RIGHT  0b00001000
 #define LEFT   0b00000010
 #define CENTER 0b00000100
-
-
-
 
 
 unsigned char backround[30][40]={
@@ -227,14 +221,14 @@ unsigned char sSCORE2[] = "SCORE2";
 
 int valOfY = 0;
 
-
-
-
 char lastKey = 'n';
 
 typedef enum {P_O, P_I, P_S, P_Z, P_L, P_J, P_T} piece_types_t;
+			//o-kvadrat,I je linija,S je kontra z, Z je z, L je l, J je j, T je t
 typedef enum {R_0, R_1, R_2, R_3} rotation_t;
 
+
+//verovatno simboli: x i y koordinate, rot stanje rotacije i type - oblik
 typedef struct {
 	int x;
 	int y;
@@ -242,29 +236,21 @@ typedef struct {
 	rotation_t rot;
 } piece_gameplay_struct_t;
 
-
-
-
-piece_gameplay_struct_t pieces[2];
+piece_gameplay_struct_t pieces[2];//napravljen niz od dva simbola
 
 int peace1_x = 4;
 int peace1_y = 4;
 piece_types_t piece;
-int start_flag=1;
+int start_flag = 1;
 
 Xuint32 addr = XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR;
 
-
-
-
 char getPressedKey(){
-
 	char pressedKey;
 	int button = Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR);
 	if ((button & UP) == 0){
 		pressedKey = 'u';
-	}
-	else if ((button & DOWN) == 0){
+	}else if ((button & DOWN) == 0){
 		pressedKey = 'd';
 	}else if ((button & RIGHT) == 0){
 		pressedKey = 'r';
@@ -273,7 +259,6 @@ char getPressedKey(){
 	}else if ((button & CENTER) == 0){
 		pressedKey = 'c';
 	}
-
 	if (lastKey != pressedKey){
 		lastKey = pressedKey;
 		return pressedKey;
@@ -286,31 +271,144 @@ char getPressedKey(){
 }
 
 
+//ovde pomera simbol po koordinati u zavisnodti od pritisnutog tastera; ovde bi trebalo ograniciti da simbol ne prelazi sa leve na desnu stranu
 void movingBlocks(piece_gameplay_struct_t* piece){
 
 	char pressedKey = getPressedKey();
 
 
-	switch(pressedKey){
-		case 'l':
+		switch(pressedKey){
+			case 'l':
+				if(piece->type == P_O){//kockica
+					if(piece->x == 1){
+						break;
+					}
+				}
+				if(piece->type == P_I){
+					if(piece->rot == R_0 || piece->rot == R_2){//horizonatalno I
+						if(piece->x == 2){
+							break;
+						}
+					}
+					if(piece->rot == R_3 || piece->rot == R_1){//vertikalno
+						if(piece->x == 0){
+							break;
+						}
+					}
 
-				piece->x--;
+				}
+				if(piece->type == P_S || piece->type == P_Z){
+					if(piece->rot == R_0 || piece->rot == R_2){//horizontalno obrnuto i obicno z
+						if(piece->x == 1){
+							break;
+						}
+					}
+					if(piece->rot == R_1 || piece->rot == R_3){//vertikalno obrnuto i obicno z
+						if(piece->x == 0){
+							break;
+						}
+					}
+				}
 
-			break;
-		case 'r':
+				if(piece->type == P_L){
 
-				piece->x++;
+					if(piece->rot == R_1){//za L u levo sve varijante
+						if(piece->x == 0){
+							break;
+						}
+					}
+					if(piece->rot == R_3 || piece->rot == R_0 ||piece->rot == R_2 ){
+						if(piece->x == 1){
+							break;
+						}
+					}
 
-			break;
-		case 'c':
-			piece->rot = (piece->rot + 1) % 4;
-			break;
+				}
 
 
-	}
+
+					piece->x--;
+				break;
+
+
+			case 'r':
+				if(piece->type == P_O){
+					if(piece->x == 7){
+						break;
+					}
+				}
+				if(piece->type == P_I){
+					if(piece->rot == R_0 || piece->rot == R_2){//horizonatalno I
+						if(piece->x == 6){
+							break;
+						}
+					}
+					if(piece->rot == R_3 || piece->rot == R_1){//vertikalno I
+						if(piece->x == 7){
+							break;
+						}
+					}
+
+				}
+				if(piece->type == P_S || piece->type == P_Z){//vertikalno i horizontalno obrnuto z i obicno z
+
+						if(piece->x == 6){
+							break;}
+
+
+				}
+
+
+				if(piece->type == P_L){
+
+					if(piece->rot == R_3){//za L u levo sve varijante
+							if(piece->x == 7){
+								break;
+							}
+					}
+					if(piece->rot == R_1 || piece->rot == R_0 ||piece->rot == R_2 ){
+						if(piece->x == 6){
+							break;
+						}
+					}
+
+				}
+
+
+					piece->x++;
+				break;
+
+			case 'c':
+				if(piece->type == P_I){//sprecavanje da se vertikalna linija promeni u horizontalnu kada je na ivici
+					if(piece->rot == R_3 || piece->rot == R_1){
+						if(piece->x == 7 || piece->x==0){
+							break;
+						}
+					}
+				}
+
+				if(piece->type == P_S || piece->type == P_Z){//sprecavanje da se obrnuto z i obicno z promeni u horizontalno kada je na levoj ivici
+					if(piece->rot == R_1 || piece->rot == R_3){
+						if(piece->x == 0){
+							break;
+						}
+					}
+				}
+
+
+
+
+
+
+				piece->rot = (piece->rot + 1) % 4;
+				break;
+
+
+		}
 
 }
 
+//nigde se ne poziva
 int returnMin(piece_gameplay_struct_t* piece){
 
 	int minX;
@@ -318,27 +416,20 @@ int returnMin(piece_gameplay_struct_t* piece){
 
 		case P_O:
 			minX = -1;
-
-		break;
+			break;
 
 		case P_I:
 			switch(piece->rot){
 			case R_0:
 			case R_2:
-
 				minX = -2;
-
-			break;
-
+				break;
 			case R_1:
 			case R_3:
 				minX = 0;
-
-
-			break;
+				break;
 			}
 		break;
-
 
 		case P_Z:
 			switch(piece->rot){
@@ -411,25 +502,18 @@ int returnMin(piece_gameplay_struct_t* piece){
 			switch(piece->rot){
 			case R_0:
 				minX = -1;
-
-
 			break;
 
 			case R_1:
 				minX = 0;
-
-
 			break;
 
 			case R_2:
 				minX = -1;
-
 			break;
 
 			case R_3:
 				minX = -1;
-
-
 			break;
 			}
 		break;
@@ -624,6 +708,7 @@ int returnMax(piece_gameplay_struct_t* piece){
 
 }
 
+//pocetna pozicija kursora; iscrtavanje simbola
 void drawSignToScreen(int x, int y, int boja, int znak){
 	set_cursor(y*40+x);
 	print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
@@ -651,20 +736,22 @@ void drawTable(u8 table[16][8], int table_x, int table_y){
 	}
 }
 */
+
+//kako tabela[4][4] moze imati vrednost 0 ili 1, enumeracija?
 void drawTable_next(u8 table[4][4], int table_x, int table_y){
 	for(int y = 0; y < 4 ; y++){
 		int out_y = y + table_y;
 			for(int x = 0; x < 4; x++){
 				int out_x = x + table_x;
 				switch(table[y][x]){
-					case 0: drawSignToScreen(out_x, out_y, 2, BACKGROUND_ZNAK);    break;
-					case 2: drawSignToScreen(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
+					case 0: drawSignToScreen(out_x, out_y, 2, BACKGROUND_ZNAK);	//crta crno polje
+						break;
+					case 2: drawSignToScreen(out_x, out_y, 2, ZNAK_KOCKICA);    //iscrtavanje
+						break;
 				}
 			}
 	}
 }
-
-
 
 
 void copyTable(u8 table1[16][8]){
@@ -1028,7 +1115,7 @@ void drawSign(int x, int y){
 
 
 void drawPiece(const piece_gameplay_struct_t* piece){
-
+//iscrtava simbol u zavisnosti od rotacije postavljajuci konkretne koordinate
 
 	switch (piece->type) {
 
@@ -1221,10 +1308,11 @@ void clearing(piece_gameplay_struct_t* piece){
 
 
 
+
 	updateTable(tmp_table,table1);
 
 }
-
+//brise red koji je ispunjen svim trojkama
 void checkIfClear(piece_gameplay_struct_t* piece){
 	int counter;
 	for (int y = 0; y < 16; y++) {
@@ -1236,6 +1324,16 @@ void checkIfClear(piece_gameplay_struct_t* piece){
 				     // clearuj ukoliko je kaunter prebrojao osam kockica za redom
 				valOfY =y;
 				clearing(piece);
+				for (int z=y; z >= 0; z--) {
+							for (int k = 0; k < 8; k++) {
+									if(z == 0){
+										table1[z][k] = 0;
+									}
+									else{
+										table1[z][k] = table1[z-1][k];
+									}
+								}
+				}
 					}
 			}
 
@@ -1254,6 +1352,13 @@ bool checkCollision(u8 table[16][8]){ // OVDJE SMO DODALI OVO KAO PARAMETAR INAC
 				}
 
 			}
+
+			/*if(table[y][x] == 3){
+				if(table[y][x-2] == 2){
+					return true;
+				}
+
+			}*/
 			// 2 is on the bottom.
 			if(y == 15){
 				if(table[y][x] == 2){
@@ -1308,7 +1413,7 @@ bool checkGameOver(piece_gameplay_struct_t* piece){
 
 }
 
-void testPeaces(void) {
+void testPieces(void) {
 	drawPieceToScreen(0, 0, 4, 4, P_O, R_0);
 	drawPieceToScreen(5, 0, 4, 4, P_I, R_0);
 	drawPieceToScreen(10, 0, 4, 4, P_I, R_1);
@@ -1485,7 +1590,7 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 	frame1_cnt++;
 
 #if TEST_MODE
-	testPeaces();
+	testPieces();
 #else
 	// Fall pieces on every second.
 	if(frame_cnt % 25 == 0){
