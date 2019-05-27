@@ -310,9 +310,9 @@ void movingBlocks(piece_gameplay_struct_t* piece){
 					}
 				}
 
-				if(piece->type == P_L){
+				if(piece->type == P_L || piece->type == P_J || piece->type == P_T){
 
-					if(piece->rot == R_1){//za L u levo sve varijante
+					if(piece->rot == R_1){//za L,J,T u levo sve varijante
 						if(piece->x == 0){
 							break;
 						}
@@ -324,8 +324,6 @@ void movingBlocks(piece_gameplay_struct_t* piece){
 					}
 
 				}
-
-
 
 					piece->x--;
 				break;
@@ -359,9 +357,9 @@ void movingBlocks(piece_gameplay_struct_t* piece){
 				}
 
 
-				if(piece->type == P_L){
+				if(piece->type == P_L || piece->type == P_J || piece->type == P_T){
 
-					if(piece->rot == R_3){//za L u levo sve varijante
+					if(piece->rot == R_3){//za L,J,T u levo sve varijante
 							if(piece->x == 7){
 								break;
 							}
@@ -395,9 +393,13 @@ void movingBlocks(piece_gameplay_struct_t* piece){
 					}
 				}
 
-
-
-
+				if(piece->type == P_L || piece->type == P_J || piece->type == P_T){//sprecavanje da se rotiraju uz ivicu j,L,t
+					if(piece->rot == R_1 || piece->rot == R_3){
+						if(piece->x == 7 || piece->x == 0){
+							break;
+						}
+					}
+				}
 
 
 				piece->rot = (piece->rot + 1) % 4;
