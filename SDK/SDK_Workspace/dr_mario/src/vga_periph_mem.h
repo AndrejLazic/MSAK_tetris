@@ -78,6 +78,7 @@ void clear_text_screen(Xuint32 BaseAddress);
 //void draw_square(Xuint32 BaseAddress);
 void print_string(Xuint32 BaseAddress, int boja, unsigned char string_s[], int lenght);
 void print_char(Xuint32 BaseAddress, int boja, unsigned char znak);
+void print_u32_hex(Xuint32 BaseAddress, int boja, u32 broj);
 
 void print_all(Xuint32 BaseAddress, int boja);
 

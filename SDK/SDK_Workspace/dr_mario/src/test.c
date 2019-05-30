@@ -217,6 +217,7 @@ unsigned char sPlayer2[] = "PLAYER2";
 unsigned char sPlayer1[] = "PLAYER10000";
 unsigned char sSCORE1[] = "SCORE1";
 unsigned char sSCORE2[] = "SCORE2";
+int score = 0x0;
 
 
 int valOfY = 0;
@@ -270,9 +271,26 @@ char getPressedKey(){
 
 }
 
+bool checkCollisionX1(u8 table[16][8]){ // OVDJE SMO DODALI OVO KAO PARAMETAR INACE RADILI SA TMP TABLE
+	for (int y = 0; y < 16; y++) {
+		for (int x = 0; x < 8; x++) {
+			// Go to tmp_table and check if there is any 2 above 3.
+			if(table[y][x] == 3){
+				if(table[y][x-1] == 2){
+					return true;
+				}
+
+			}
+
+		}
+	}
+
+	return false;
+
+}
 
 //ovde pomera simbol po koordinati u zavisnodti od pritisnutog tastera; ovde bi trebalo ograniciti da simbol ne prelazi sa leve na desnu stranu
-void movingBlocks(piece_gameplay_struct_t* piece){
+void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 
 	char pressedKey = getPressedKey();
 
@@ -283,20 +301,33 @@ void movingBlocks(piece_gameplay_struct_t* piece){
 					if(piece->x == 1){
 						break;
 					}
+					if(table[piece->y-1][(piece->x)-2] == 3 || table[piece->y+1][(piece->x)-2] == 3 || table[piece->y][(piece->x)-2] == 3 ){
+						break;
+					}
+
 				}
+
 				if(piece->type == P_I){
 					if(piece->rot == R_0 || piece->rot == R_2){//horizonatalno I
 						if(piece->x == 2){
 							break;
 						}
+						if(table[piece->y-1][(piece->x)-3] == 3 || table[piece->y+1][(piece->x)-3] == 3 || table[piece->y][(piece->x)-3] == 3 ){
+							break;
+						}
 					}
+
 					if(piece->rot == R_3 || piece->rot == R_1){//vertikalno
 						if(piece->x == 0){
+							break;
+						}
+						if(table[piece->y-2][(piece->x) -1] == 3 || table[piece->y-1][(piece->x) - 1] == 3 || table[piece->y+1][(piece->x) - 1] == 3 || table[piece->y][(piece->x) - 1] == 3 || table[piece->y+2][(piece->x) - 1] == 3){
 							break;
 						}
 					}
 
 				}
+
 				if(piece->type == P_S || piece->type == P_Z){
 					if(piece->rot == R_0 || piece->rot == R_2){//horizontalno obrnuto i obicno z
 						if(piece->x == 1){
@@ -334,10 +365,17 @@ void movingBlocks(piece_gameplay_struct_t* piece){
 					if(piece->x == 7){
 						break;
 					}
+					if(table[piece->y-1][(piece->x)+1] == 3 || table[piece->y+1][(piece->x)+1] == 3 || table[piece->y][(piece->x)+1] == 3 ){
+						break;
+					}
 				}
+
 				if(piece->type == P_I){
 					if(piece->rot == R_0 || piece->rot == R_2){//horizonatalno I
 						if(piece->x == 6){
+							break;
+						}
+						if(table[piece->y-1][(piece->x)+2] == 3 || table[piece->y+1][(piece->x)+2] == 3 || table[piece->y][(piece->x)+2] == 3 ){
 							break;
 						}
 					}
@@ -345,20 +383,20 @@ void movingBlocks(piece_gameplay_struct_t* piece){
 						if(piece->x == 7){
 							break;
 						}
+						if(table[piece->y-2][(piece->x) + 1] == 3 || table[piece->y-1][(piece->x) + 1] == 3 || table[piece->y+1][(piece->x) + 1] == 3 || table[piece->y][(piece->x) + 1] == 3 || table[piece->y+2][(piece->x) + 1] == 3){
+							break;
+						}
 					}
 
 				}
+
 				if(piece->type == P_S || piece->type == P_Z){//vertikalno i horizontalno obrnuto z i obicno z
-
 						if(piece->x == 6){
-							break;}
-
-
+							break;
+						}
 				}
 
-
 				if(piece->type == P_L || piece->type == P_J || piece->type == P_T){
-
 					if(piece->rot == R_3){//za L,J,T u levo sve varijante
 							if(piece->x == 7){
 								break;
@@ -372,7 +410,6 @@ void movingBlocks(piece_gameplay_struct_t* piece){
 
 				}
 
-
 					piece->x++;
 				break;
 
@@ -380,6 +417,10 @@ void movingBlocks(piece_gameplay_struct_t* piece){
 				if(piece->type == P_I){//sprecavanje da se vertikalna linija promeni u horizontalnu kada je na ivici
 					if(piece->rot == R_3 || piece->rot == R_1){
 						if(piece->x == 7 || piece->x==0){
+							break;
+						}
+
+						if(table[piece->y][(piece->x) + 1] == 3  || table[piece->y][(piece->x) -2] == 3 || table[piece->y][(piece->x) -1] == 3){
 							break;
 						}
 					}
@@ -406,7 +447,11 @@ void movingBlocks(piece_gameplay_struct_t* piece){
 				break;
 
 
+			case 'd':
+				piece->y++;
+				break;
 		}
+
 
 }
 
@@ -1315,7 +1360,37 @@ void clearing(piece_gameplay_struct_t* piece){
 
 }
 //brise red koji je ispunjen svim trojkama
-void checkIfClear(piece_gameplay_struct_t* piece){
+/*void checkIfClear(piece_gameplay_struct_t* piece){
+	int counter;
+	for (int y = 0; y < 16; y++) {
+		for (int x = 0; x < 8; x++) {
+			if(table1[y][x] == 3){
+				counter++;
+				}
+			if (counter == 8){
+				     // clearuj ukoliko je kaunter prebrojao osam kockica za redom
+				valOfY =y;
+				clearing(piece);
+				for (int z=y; z >= 0; z--) {
+							for (int k = 0; k < 8; k++) {
+									if(z == 0){
+										table1[z][k] = 0;
+									}
+									else{
+										table1[z][k] = table1[z-1][k];
+									}
+								}
+				}
+					}
+			}
+
+		counter = 0;
+	}
+
+}*/
+
+
+void checkIfClear(piece_gameplay_struct_t* piece, int score){
 	int counter;
 	for (int y = 0; y < 16; y++) {
 		for (int x = 0; x < 8; x++) {
@@ -1344,6 +1419,7 @@ void checkIfClear(piece_gameplay_struct_t* piece){
 
 }
 
+
 bool checkCollision(u8 table[16][8]){ // OVDJE SMO DODALI OVO KAO PARAMETAR INACE RADILI SA TMP TABLE
 	for (int y = 0; y < 16; y++) {
 		for (int x = 0; x < 8; x++) {
@@ -1362,6 +1438,7 @@ bool checkCollision(u8 table[16][8]){ // OVDJE SMO DODALI OVO KAO PARAMETAR INAC
 
 			}*/
 			// 2 is on the bottom.
+
 			if(y == 15){
 				if(table[y][x] == 2){
 					return true;
@@ -1391,12 +1468,36 @@ void updateTable(u8 table[16][8],u8 temp_table[16][8]) { // DODALI JEDAN PARAMET
 }
 
 
+void scoreRefresh(){
+	score += 1;
+	set_cursor(28*40 + 7);
+	score = 0xbabadeda;
+	print_u32_hex(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, score);
+}
 
 
 
-void spawnNewPiece(piece_gameplay_struct_t* piece) {
-
+void spawnInitialPiece(piece_gameplay_struct_t* piece) {
 	piece->type = rand()%7;
+	piece->rot = R_0;
+	piece->x = 4;
+	piece->y = 0;
+	drawNext(piece->type, piece->rot);
+}
+
+void spawnNextPiece(piece_gameplay_struct_t* next_piece) {
+
+	next_piece->type = rand()%7;
+	next_piece->rot = R_0;
+	next_piece->x = 4;
+	next_piece->y = 0;
+	drawActualNext(next_piece->type, next_piece->rot);
+}
+
+
+void spawnNewPiece(piece_gameplay_struct_t* piece, piece_gameplay_struct_t* next_piece) {
+
+	piece->type = next_piece->type;
 	piece->rot = R_0;
 	piece->x = 4;
 	piece->y = 0;
@@ -1447,6 +1548,9 @@ void testPieces(void) {
 
 void drawNext(piece_types_t piece_t, rotation_t rot_t){
 		drawTable_next(table_next,16,14);
+	}
+
+void drawActualNext(piece_types_t piece_t, rotation_t rot_t){
 		drawPieceToScreen(18, 15, 0, 0, piece_t, rot_t);
 	}
 
@@ -1584,6 +1688,38 @@ void drawGameOver(){
 
 
 void my_timer_interrupt_handler(void * baseaddr_p) {
+	scoreRefresh();
+	/*for(int i = 0; i < 9; i++){
+		int zapis;
+		int boja = 1;
+		zapis = boja<<6;
+		int znak = i + 28;
+
+		zapis|=znak;
+		VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + TEXT_MEM_OFF + i*4, zapis);
+	}*/
+
+	/*for(int i = 0; i < 64; i++){
+		int zapis;
+		int boja = 1;
+		zapis = boja<<6;
+		int znak = i;
+
+		zapis|=znak;
+		VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + TEXT_MEM_OFF + i*4, zapis);
+	}*/
+
+
+			/*int zapis;
+			int boja = 1;
+			zapis = boja<<6;
+			int znak = 0x1C;
+
+			zapis|=znak;
+			VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + TEXT_MEM_OFF +4, zapis);*/
+
+
+
 	//drawing screen and counting interrupts.
 
 	static int frame_cnt = 0;
@@ -1599,13 +1735,13 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 		// Just increment piece position. Nothing else.
 		fallPeace(&pieces[0]);
 	}
-	movingBlocks(&pieces[0]);
+	movingBlocks(&pieces[0],table1);
 
 
 	// Doing table1.
 
 	// Draw (copy) table1 to tmp_table.
-	checkIfClear(&pieces[0]);
+	checkIfClear(&pieces[0], score);
 	copyTable(table1);
 
 
@@ -1629,7 +1765,8 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 			return 0;
 		}
 
-		spawnNewPiece(&pieces[0]);
+		spawnNewPiece(&pieces[0],&pieces[1]);
+		spawnNextPiece(&pieces[1]);
 
 
 	}
@@ -1706,7 +1843,8 @@ int main() {
 	drawBackground();
 	drawStaticGameMessages();
 
-	spawnNewPiece(&pieces[0]);
+	spawnInitialPiece(&pieces[0]);
+	spawnNextPiece(&pieces[1]);
 	//spawnNewPiece(&pieces[1]);
 
 #endif

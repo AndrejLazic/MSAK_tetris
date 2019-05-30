@@ -61,6 +61,27 @@ void print_char(Xuint32 BaseAddress, int boja, unsigned char znak){
 	zapis|=znak;
 	VGA_PERIPH_MEM_mWriteMemory(BaseAddress + TEXT_MEM_OFF + cursor_position*4, zapis);
 }
+
+void print_u32_hex(Xuint32 BaseAddress, int boja, u32 broj){
+
+
+	for(int i = 0; i < 8; i++){
+		u32 nibble = broj >> ((7-i)*4);
+
+		nibble &= 0xf;
+
+		if (nibble <= 9){
+			nibble += 0x1C;
+		}else{
+			nibble -= 9;
+		}
+
+		u32 zapis = (boja << 6) | nibble;
+
+		VGA_PERIPH_MEM_mWriteMemory(BaseAddress + TEXT_MEM_OFF + (cursor_position+i)*4, zapis);
+	}
+
+}
 //printing all chars
 void print_all(Xuint32 BaseAddress, int boja){
 	int zapis;
