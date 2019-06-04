@@ -31,7 +31,6 @@
 #define LEFT   0b00000010
 #define CENTER 0b00000100
 
-
 unsigned char backround[30][40]={
 				{1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1},
 				{1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1,  1,1,1,1,1},
@@ -110,7 +109,6 @@ unsigned char gameOverTable[30][40]={
 
 };
 
-
 // 2 - falling
 // 3 - fallen.
 u8 tmp_table[16][8] = {
@@ -133,8 +131,6 @@ u8 tmp_table[16][8] = {
 
 };
 
-
-
 u8 table1[16][8] = {
 	{0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0},
@@ -155,8 +151,6 @@ u8 table1[16][8] = {
 
 };
 
-
-
 u8 table2[16][8] = {
 	{0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0},
@@ -176,8 +170,6 @@ u8 table2[16][8] = {
 	{0,0,0,0,0,0,0,0},
 
 };
-
-
 
 u8 tmp_table2[16][8] = {
 	{0,0,0,0,0,0,0,0},
@@ -207,7 +199,6 @@ u8 table_next[4][4] = {
 
 };
 
-
 XIntc Intc;
 
 unsigned char debouncer = 0;
@@ -219,7 +210,6 @@ unsigned char sSCORE1[] = "SCORE1";
 unsigned char sSCORE2[] = "SCORE2";
 int score = 0x0;
 
-
 int valOfY = 0;
 
 char lastKey = 'n';
@@ -227,7 +217,6 @@ char lastKey = 'n';
 typedef enum {P_O, P_I, P_S, P_Z, P_L, P_J, P_T} piece_types_t;
 			//o-kvadrat,I je linija,S je kontra z, Z je z, L je l, J je j, T je t
 typedef enum {R_0, R_1, R_2, R_3} rotation_t;
-
 
 //verovatno simboli: x i y koordinate, rot stanje rotacije i type - oblik
 typedef struct {
@@ -264,8 +253,7 @@ char getPressedKey(){
 		lastKey = pressedKey;
 		return pressedKey;
 	}
-	else {
-
+	else{
 		return 'n';
 	}
 
@@ -279,21 +267,15 @@ bool checkCollisionX1(u8 table[16][8]){ // OVDJE SMO DODALI OVO KAO PARAMETAR IN
 				if(table[y][x-1] == 2){
 					return true;
 				}
-
 			}
-
 		}
 	}
-
 	return false;
-
 }
 
 //ovde pomera simbol po koordinati u zavisnodti od pritisnutog tastera; ovde bi trebalo ograniciti da simbol ne prelazi sa leve na desnu stranu
 void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
-
 	char pressedKey = getPressedKey();
-
 
 		switch(pressedKey){
 			case 'l':
@@ -451,308 +433,6 @@ void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 				piece->y++;
 				break;
 		}
-
-
-}
-
-//nigde se ne poziva
-int returnMin(piece_gameplay_struct_t* piece){
-
-	int minX;
-	switch (piece->type) {
-
-		case P_O:
-			minX = -1;
-			break;
-
-		case P_I:
-			switch(piece->rot){
-			case R_0:
-			case R_2:
-				minX = -2;
-				break;
-			case R_1:
-			case R_3:
-				minX = 0;
-				break;
-			}
-		break;
-
-		case P_Z:
-			switch(piece->rot){
-			case R_0:
-			case R_2:
-				minX = -1;
-
-
-			break;
-
-			case R_1:
-			case R_3:
-				minX = 0;
-
-
-			break;
-			}
-		break;
-
-		case P_S:
-			switch(piece->rot){
-			case R_0:
-			case R_2:
-				minX = -1;
-
-
-			break;
-
-			case R_1:
-			case R_3:
-				minX = 0;
-
-
-			break;
-			}
-		break;
-
-
-		case P_J:
-			switch(piece->rot){
-			case R_0:
-				minX = -1;
-
-
-			break;
-
-			case R_1:
-				minX = 0;
-
-
-			break;
-
-			case R_2:
-				minX = -1;
-
-
-			break;
-
-			case R_3:
-				minX = -1;
-
-
-			break;
-
-			}
-		break;
-
-
-		case P_L:
-			switch(piece->rot){
-			case R_0:
-				minX = -1;
-			break;
-
-			case R_1:
-				minX = 0;
-			break;
-
-			case R_2:
-				minX = -1;
-			break;
-
-			case R_3:
-				minX = -1;
-			break;
-			}
-		break;
-
-
-		case P_T:
-			switch(piece->rot){
-			case R_0:
-				minX = -1;
-
-
-			break;
-
-			case R_1:
-				minX = 0;
-
-			break;
-
-
-			case R_2:
-				minX = -1;
-
-			break;
-			case R_3:
-				minX = -1;
-
-			break;
-			}
-		break;
-
-
-
-		}
-	return minX;
-
-}
-
-
-int returnMax(piece_gameplay_struct_t* piece){
-
-	int maxX;
-	switch (piece->type) {
-
-		case P_O:
-			maxX = 0;
-
-		break;
-
-		case P_I:
-			switch(piece->rot){
-			case R_0:
-			case R_2:
-
-				maxX = 1;
-
-			break;
-
-			case R_1:
-			case R_3:
-				maxX = 0;
-
-
-			break;
-			}
-		break;
-
-
-		case P_Z:
-			switch(piece->rot){
-			case R_0:
-			case R_2:
-				maxX = 1;
-
-
-			break;
-
-			case R_1:
-			case R_3:
-				maxX = 1;
-
-
-			break;
-			}
-		break;
-
-		case P_S:
-			switch(piece->rot){
-			case R_0:
-			case R_2:
-				maxX = 1;
-
-
-			break;
-
-			case R_1:
-			case R_3:
-				maxX = 1;
-
-
-			break;
-			}
-		break;
-
-
-		case P_J:
-			switch(piece->rot){
-			case R_0:
-				maxX = 1;
-
-
-			break;
-
-			case R_1:
-				maxX = 1;
-
-
-			break;
-
-			case R_2:
-				maxX = 1;
-
-
-			break;
-
-			case R_3:
-				maxX = 0;
-
-
-			break;
-
-			}
-		break;
-
-
-		case P_L:
-			switch(piece->rot){
-			case R_0:
-				maxX = 1;
-
-
-			break;
-
-			case R_1:
-				maxX = 1;
-
-
-			break;
-
-			case R_2:
-				maxX = 1;
-
-			break;
-
-			case R_3:
-				maxX = 0;
-
-
-			break;
-			}
-		break;
-
-
-		case P_T:
-			switch(piece->rot){
-			case R_0:
-				maxX = 1;
-
-
-			break;
-
-			case R_1:
-				maxX = 1;
-
-			break;
-
-
-			case R_2:
-				maxX = 1;
-
-			break;
-			case R_3:
-				maxX = 0;
-
-			break;
-			}
-		break;
-
-
-
-		}
-	return maxX;
-
 }
 
 //pocetna pozicija kursora; iscrtavanje simbola
@@ -761,45 +441,20 @@ void drawSignToScreen(int x, int y, int boja, int znak){
 	print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
 }
 
-/*
-void drawMap(){
-	drawTable(tmp_table, 6, 6);// MIJENJALI
-	drawTable(table1, 6+8+12, 6);
-}
-
-
-
-void drawTable(u8 table[16][8], int table_x, int table_y){
-	for(int y = 0; y < 16 ; y++){
-		int out_y = y + table_y;
-			for(int x = 0; x < 8; x++){
-				int out_x = x + table_x;
-				switch(table[y][x]){
-					case 0: drawSignToScreen(out_x, out_y, 2, BACKGROUND_ZNAK);    break;
-					case 2: drawSignToScreen(out_x, out_y, 2, ZNAK_KOCKICA)   ;    break;
-					case 3: drawSignToScreen(out_x, out_y, 2, ZNAK_KOCKICA1)   ;    break;
-				}
-			}
-	}
-}
-*/
-
-//kako tabela[4][4] moze imati vrednost 0 ili 1, enumeracija?
 void drawTable_next(u8 table[4][4], int table_x, int table_y){
 	for(int y = 0; y < 4 ; y++){
 		int out_y = y + table_y;
-			for(int x = 0; x < 4; x++){
-				int out_x = x + table_x;
-				switch(table[y][x]){
-					case 0: drawSignToScreen(out_x, out_y, 2, BACKGROUND_ZNAK);	//crta crno polje
-						break;
-					case 2: drawSignToScreen(out_x, out_y, 2, ZNAK_KOCKICA);    //iscrtavanje
-						break;
-				}
+		for(int x = 0; x < 4; x++){
+			int out_x = x + table_x;
+			switch(table[y][x]){
+				case 0: drawSignToScreen(out_x, out_y, 2, BACKGROUND_ZNAK);	//crta crno polje
+					break;
+				case 2: drawSignToScreen(out_x, out_y, 2, ZNAK_KOCKICA);    //iscrtavanje
+					break;
 			}
+		}
 	}
 }
-
 
 void copyTable(u8 table1[16][8]){
 	for (int y = 0; y < 16; y++) {
@@ -809,369 +464,171 @@ void copyTable(u8 table1[16][8]){
 	}
 }
 
-
-
 void drawPieceToScreen(int table_x, int table_y, int x, int y, piece_types_t piece, rotation_t rot) {
 	int boja1 = 3;
 	x += table_x;
 	y += table_y;
 
-
 	switch (piece) {
-	case P_O:
-		drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-		drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
-		drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
-		drawSignToScreen(x-1, y-1, boja1, ZNAK_KOCKICA);
-
-		break;
-
-	case P_I:
-		switch(rot){
-		case R_0:
-			drawSignToScreen(x-2, y, boja1, ZNAK_KOCKICA);
+		case P_O:
+			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
 			drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
-
-			break;
-		case R_1:
-			drawSignToScreen(x, y-2, boja1, ZNAK_KOCKICA);
 			drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
+			drawSignToScreen(x-1, y-1, boja1, ZNAK_KOCKICA);
 			break;
+
+		case P_I:
+		switch(rot){
+			case R_0:
+				drawSignToScreen(x-2, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
+				break;
+			case R_1:
+				drawSignToScreen(x, y-2, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
+				break;
 		}
 		break;
 
-
 	case P_Z:
 		switch(rot){
-		case R_0:
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x-1, y-1, boja1, ZNAK_KOCKICA);
-
-
-			break;
-		case R_1:
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y-1, boja1, ZNAK_KOCKICA);
-			break;
+			case R_0:
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x-1, y-1, boja1, ZNAK_KOCKICA);
+				break;
+			case R_1:
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y-1, boja1, ZNAK_KOCKICA);
+				break;
 		}
 		break;
 
 	case P_S:
 		switch(rot){
-		case R_0:
-			drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y-1, boja1, ZNAK_KOCKICA);
-
-
-			break;
-		case R_1:
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y+1, boja1, ZNAK_KOCKICA);
-			break;
+			case R_0:
+				drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y-1, boja1, ZNAK_KOCKICA);
+				break;
+			case R_1:
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y+1, boja1, ZNAK_KOCKICA);
+				break;
 		}
 		break;
-
 
 	case P_J:
 		switch(rot){
-		case R_0:
-			drawSignToScreen(x-1, y-1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
-
-			break;
-		case R_1:
-			drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y-1, boja1, ZNAK_KOCKICA);
-			break;
-		case R_2:
-			drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y+1, boja1, ZNAK_KOCKICA);
-			break;
-		case R_3:
-			drawSignToScreen(x-1, y+1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
-			break;
+			case R_0:
+				drawSignToScreen(x-1, y-1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
+				break;
+			case R_1:
+				drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y-1, boja1, ZNAK_KOCKICA);
+				break;
+			case R_2:
+				drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y+1, boja1, ZNAK_KOCKICA);
+				break;
+			case R_3:
+				drawSignToScreen(x-1, y+1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
+				break;
 
 		}
 		break;
-
 
 	case P_L:
 		switch(rot){
-		case R_0:
-			drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y-1, boja1, ZNAK_KOCKICA);
-
-
-			break;
-		case R_1:
-			drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y+1, boja1, ZNAK_KOCKICA);
-			break;
-		case R_2:
-			drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x-1, y+1, boja1, ZNAK_KOCKICA);
-			break;
-		case R_3:
-			drawSignToScreen(x-1, y-1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
-			break;
+			case R_0:
+				drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y-1, boja1, ZNAK_KOCKICA);
+				break;
+			case R_1:
+				drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y+1, boja1, ZNAK_KOCKICA);
+				break;
+			case R_2:
+				drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x-1, y+1, boja1, ZNAK_KOCKICA);
+				break;
+			case R_3:
+				drawSignToScreen(x-1, y-1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
+				break;
 		}
 		break;
-
 
 	case P_T:
 		switch(rot){
-		case R_0:
-			drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
-
-
-			break;
-		case R_1:
-			drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
-			break;
-		case R_2:
-			drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
-			break;
-		case R_3:
-			drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
-			drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
-			break;
+			case R_0:
+				drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
+				break;
+			case R_1:
+				drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
+				break;
+			case R_2:
+				drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x+1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
+				break;
+			case R_3:
+				drawSignToScreen(x-1, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y-1, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y, boja1, ZNAK_KOCKICA);
+				drawSignToScreen(x, y+1, boja1, ZNAK_KOCKICA);
+				break;
 		}
 		break;
-
-
 	}
 }
 
-void drawSign(int x, int y){
-	// Drawing falling sign to tmp_table.
+void drawSign(int x, int y){// Crtaj padajuci oblik u tmp_table.
 	tmp_table[y][x] = 2;
 }
 
-/*void retMinMax(min_max_struct* minMax, piece_gameplay_struct_t* piece){
-
-
-
+void drawPiece(const piece_gameplay_struct_t* piece){//iscrtava simbol u zavisnosti od rotacije postavljajuci konkretne koordinate
 	switch (piece->type) {
-
-		case P_O:
-			minMax->minX = -1;
-			minMax->maxX = 0;
-		break;
-
-		case P_I:
-			switch(piece->rot){
-			case R_0:
-			case R_2:
-
-				minMax->minX = -2;
-				minMax->maxX = 1;
-
-			break;
-
-			case R_1:
-			case R_3:
-				minMax->minX = 0;
-				minMax->maxX = 0;
-
-			break;
-			}
-		break;
-
-
-		case P_Z:
-			switch(piece->rot){
-			case R_0:
-			case R_2:
-				minMax->minX = -1;
-				minMax->maxX = 1;
-
-			break;
-
-			case R_1:
-			case R_3:
-				minMax->minX = 0;
-				minMax->maxX = 1;
-
-			break;
-			}
-		break;
-
-		case P_S:
-			switch(piece->rot){
-			case R_0:
-			case R_2:
-				minMax->minX = -1;
-				minMax->maxX = 1;
-
-			break;
-
-			case R_1:
-			case R_3:
-				minMax->minX = 0;
-				minMax->maxX = 1;
-
-			break;
-			}
-		break;
-
-
-		case P_J:
-			switch(piece->rot){
-			case R_0:
-				minMax->minX = -1;
-				minMax->maxX = 1;
-
-			break;
-
-			case R_1:
-				minMax->minX = 0;
-				minMax->maxX = 1;
-
-			break;
-
-			case R_2:
-				minMax->minX = -1;
-				minMax->maxX = 1;
-
-			break;
-
-			case R_3:
-				minMax->minX = -1;
-				minMax->maxX = 0;
-
-			break;
-
-			}
-		break;
-
-
-		case P_L:
-			switch(piece->rot){
-			case R_0:
-				minMax->minX = -1;
-				minMax->maxX = 1;
-
-			break;
-
-			case R_1:
-				minMax->minX = 0;
-				minMax->maxX = 1;
-
-			break;
-
-			case R_2:
-				minMax->minX = -1;
-				minMax->maxX = 1;
-
-			break;
-
-			case R_3:
-				minMax->minX = -1;
-				minMax->maxX = 0;
-
-			break;
-			}
-		break;
-
-
-		case P_T:
-			switch(piece->rot){
-			case R_0:
-				minMax->minX = -1;
-				minMax->maxX = 1;
-
-			break;
-
-			case R_1:
-				minMax->minX = 0;
-				minMax->maxX = 1;
-
-			break;
-
-
-			case R_2:
-				minMax->minX = -1;
-				minMax->maxX = 1;
-
-			break;
-			case R_3:
-				minMax->minX = -1;
-				minMax->maxX = 0;
-
-			break;
-			}
-		break;
-
-
-
-		}
-	//
-
-
-
-
-
-
-
-
-
-	return (&minMax);
-
-}*/
-
-
-void drawPiece(const piece_gameplay_struct_t* piece){
-//iscrtava simbol u zavisnosti od rotacije postavljajuci konkretne koordinate
-
-	switch (piece->type) {
-
 		case P_O:
 			drawSign(piece->x, piece->y);
 			drawSign(piece->x-1, piece->y);
 			drawSign(piece->x, piece->y-1);
 			drawSign(piece->x-1, piece->y-1);
-
 			break;
 
 		case P_I:
@@ -1182,7 +639,6 @@ void drawPiece(const piece_gameplay_struct_t* piece){
 				drawSign(piece->x-1,piece->y);
 				drawSign(piece->x, piece->y);
 				drawSign(piece->x+1, piece->y);
-
 				break;
 			case R_1:
 			case R_3:
@@ -1194,7 +650,6 @@ void drawPiece(const piece_gameplay_struct_t* piece){
 			}
 			break;
 
-
 		case P_Z:
 			switch(piece->rot){
 			case R_0:
@@ -1203,8 +658,6 @@ void drawPiece(const piece_gameplay_struct_t* piece){
 				drawSign(piece->x+1, piece->y);
 				drawSign(piece->x, piece->y-1);
 				drawSign(piece->x-1, piece->y-1);
-
-
 				break;
 			case R_1:
 			case R_3:
@@ -1224,8 +677,6 @@ void drawPiece(const piece_gameplay_struct_t* piece){
 				drawSign(piece->x, piece->y);
 				drawSign(piece->x, piece->y-1);
 				drawSign(piece->x+1, piece->y-1);
-
-
 				break;
 			case R_1:
 			case R_3:
@@ -1237,7 +688,6 @@ void drawPiece(const piece_gameplay_struct_t* piece){
 			}
 			break;
 
-
 		case P_J:
 			switch(piece->rot){
 			case R_0:
@@ -1245,7 +695,6 @@ void drawPiece(const piece_gameplay_struct_t* piece){
 				drawSign(piece->x-1, piece->y);
 				drawSign(piece->x, piece->y);
 				drawSign(piece->x+1, piece->y);
-
 				break;
 			case R_1:
 				drawSign(piece->x, piece->y-1);
@@ -1269,7 +718,6 @@ void drawPiece(const piece_gameplay_struct_t* piece){
 			}
 			break;
 
-
 		case P_L:
 			switch(piece->rot){
 			case R_0:
@@ -1277,8 +725,6 @@ void drawPiece(const piece_gameplay_struct_t* piece){
 				drawSign(piece->x, piece->y);
 				drawSign(piece->x+1, piece->y);
 				drawSign(piece->x+1, piece->y-1);
-
-
 				break;
 			case R_1:
 				drawSign(piece->x, piece->y-1);
@@ -1300,7 +746,6 @@ void drawPiece(const piece_gameplay_struct_t* piece){
 				break;
 			}
 			break;
-
 
 		case P_T:
 			switch(piece->rot){
@@ -1332,66 +777,24 @@ void drawPiece(const piece_gameplay_struct_t* piece){
 				break;
 			}
 			break;
-
-
-
 		}
-
 }
-
 
 void fallPeace(piece_gameplay_struct_t* piece){
 	piece->y++;
 
 }
 
-
 void clearing(){
 	int x,y;
 	for (x = 0; x < 8; x++){
 		table1[valOfY][x] = 0;
-
 	}
-
-
-
-
 	updateTable(tmp_table,table1);
-
 }
-//brise red koji je ispunjen svim trojkama
-/*void checkIfClear(piece_gameplay_struct_t* piece){
-	int counter;
-	for (int y = 0; y < 16; y++) {
-		for (int x = 0; x < 8; x++) {
-			if(table1[y][x] == 3){
-				counter++;
-				}
-			if (counter == 8){
-				     // clearuj ukoliko je kaunter prebrojao osam kockica za redom
-				valOfY =y;
-				clearing(piece);
-				for (int z=y; z >= 0; z--) {
-							for (int k = 0; k < 8; k++) {
-									if(z == 0){
-										table1[z][k] = 0;
-									}
-									else{
-										table1[z][k] = table1[z-1][k];
-									}
-								}
-				}
-					}
-			}
-
-		counter = 0;
-	}
-
-}*/
-
 
 void checkIfClear(piece_gameplay_struct_t* piece, int score){
-	int counter=0;
+	int counter = 0;
 	for (int y = 0; y < 16; y++) {
 		for (int x = 0; x < 8; x++) {
 			if(table1[y][x] == 3){
@@ -1399,49 +802,32 @@ void checkIfClear(piece_gameplay_struct_t* piece, int score){
 				}
 			if (counter == 8){
 				scoreRefresh();
-
-				     // clearuj ukoliko je kaunter prebrojao osam kockica za redom
 				valOfY =y;
 				clearing();
 				for (int z=y; z >= 0; z--) {
-							for (int k = 0; k < 8; k++) {
-									if(z == 0){
-										table1[z][k] = 0;
-									}
-									else{
-										table1[z][k] = table1[z-1][k];
-									}
-								}
-
-				}
+					for (int k = 0; k < 8; k++) {
+						if(z == 0){
+							table1[z][k] = 0;
+						}
+						else{
+							table1[z][k] = table1[z-1][k];
+						}
 					}
+				}
 			}
-
+		}
 		counter = 0;
 	}
-
 }
-
 
 bool checkCollision(u8 table[16][8]){ // OVDJE SMO DODALI OVO KAO PARAMETAR INACE RADILI SA TMP TABLE
 	for (int y = 0; y < 16; y++) {
 		for (int x = 0; x < 8; x++) {
-			// Go to tmp_table and check if there is any 2 above 3.
 			if(table[y][x] == 3){
 				if(table[y-1][x] == 2){
 					return true;
 				}
-
 			}
-
-			/*if(table[y][x] == 3){
-				if(table[y][x-2] == 2){
-					return true;
-				}
-
-			}*/
-			// 2 is on the bottom.
-
 			if(y == 15){
 				if(table[y][x] == 2){
 					return true;
@@ -1449,9 +835,7 @@ bool checkCollision(u8 table[16][8]){ // OVDJE SMO DODALI OVO KAO PARAMETAR INAC
 			}
 		}
 	}
-
 	return false;
-
 }
 
 void updateTable(u8 table[16][8],u8 temp_table[16][8]) { // DODALI JEDAN PARAMETAR, TMP_TABELA
@@ -1465,27 +849,21 @@ void updateTable(u8 table[16][8],u8 temp_table[16][8]) { // DODALI JEDAN PARAMET
 				table[y][x] = 3;
 				break;
 			}
-
 		}
 	}
 }
 
-
 void scoreRefresh(){
 	score += 256;
 	set_cursor(28*40 + 7);
-	//score = 0xbabadeda;
 	print_u32_hex(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, score);
 }
 
 void scoreInitialize(){
 	score = 0;
 	set_cursor(28*40 + 7);
-	//score = 0xbabadeda;
 	print_u32_hex(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, score);
 }
-
-
 
 void spawnInitialPiece(piece_gameplay_struct_t* piece) {
 	piece->type = rand()%7;
@@ -1496,7 +874,6 @@ void spawnInitialPiece(piece_gameplay_struct_t* piece) {
 }
 
 void spawnNextPiece(piece_gameplay_struct_t* next_piece) {
-
 	next_piece->type = rand()%7;
 	next_piece->rot = R_0;
 	next_piece->x = 4;
@@ -1504,26 +881,21 @@ void spawnNextPiece(piece_gameplay_struct_t* next_piece) {
 	drawActualNext(next_piece->type, next_piece->rot);
 }
 
-
 void spawnNewPiece(piece_gameplay_struct_t* piece, piece_gameplay_struct_t* next_piece) {
-
 	piece->type = next_piece->type;
 	piece->rot = R_0;
 	piece->x = 4;
 	piece->y = 0;
 	drawNext(piece->type, piece->rot);
-
 }
-
 
 bool checkGameOver(piece_gameplay_struct_t* piece){
 	for (int x = 0; x < 8; x++) {
 		if (tmp_table[0][x] == 3){
-				return true;
-			}
+			return true;
 		}
+	}
 	return false;
-
 }
 
 void testPieces(void) {
@@ -1546,57 +918,19 @@ void testPieces(void) {
 	drawPieceToScreen(10, 10, 4, 4, P_T, R_1);
 	drawPieceToScreen(15, 10, 4, 4, P_T, R_2);
 	drawPieceToScreen(20, 10, 4, 4, P_T, R_3);
-
-
 }
-
-/*void drawPieceToScreens(void) {
-
-	drawPieceToScreen(6, 3, peace1_x, peace1_y, piece, R_0);
-
-}*/
 
 void drawNext(piece_types_t piece_t, rotation_t rot_t){
-		drawTable_next(table_next,16,14);
-	}
+	drawTable_next(table_next,16,14);
+}
 
 void drawActualNext(piece_types_t piece_t, rotation_t rot_t){
-		drawPieceToScreen(18, 15, 0, 0, piece_t, rot_t);
-	}
+	drawPieceToScreen(18, 15, 0, 0, piece_t, rot_t);
+}
 
 void drawNextInTable(piece_types_t piece_t){
-
-	//piece_t = rand()%7;
 	drawNext(piece_t, R_0);
-	//
-
-
 }
-
-
-
-
-// ----------------------------------- CURRENT GAME STATISTICS -------------------------------
-// it draws game statistic: current level, number of viruses, current game speed and current score
-void drawGameState(){
-/*
-	//Score1
-	set_cursor(27*40 + 7);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_score, 6);
-
-    //Score2
-    set_cursor(27*40 + 27);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_score2, 6);
-
-
-	//LEVEL
-	set_cursor(28*40 + 17);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 3, s_lvl, 2);
-*/
-
-}
-
-
 
 // ------------------------------- DRAWING THE GAME STATIC MESSAGES --------------------------
 // draws strings on background, its called only on the start of the game
@@ -1613,14 +947,11 @@ void drawStaticGameMessages(){
     set_cursor(13*40 + 17);
     print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sNEXT, 4);
 
-
-
 	//LEVEL
-	set_cursor(27*40 + 17);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sLEVEL, 5);
+	//set_cursor(27*40 + 17);
+    //print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sLEVEL, 5);
 
     //SCORE1
-
     set_cursor(26*40 + 7);
     print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sSCORE1, 6);
 
@@ -1659,79 +990,48 @@ void drawToScreen(int table_x, int table_y, u8 table[16][8]){
 			int boja = 0;
 			int znak = 0;
 			switch (table[y][x]) {
-			case 0:
-				boja = 0; //0
-				znak = BACKGROUND_ZNAK;
-				break;
-			case 2:
-				boja = 1; //ZELENA 1
-				znak = ZNAK_KOCKICA;
-				break;
-			case 3:
-				boja = 2;//PLAVA 2
-				znak = ZNAK_KOCKICA1;
-				break;
+				case 0:
+					boja = 0; //0
+					znak = BACKGROUND_ZNAK;
+					break;
+				case 2:
+					boja = 1; //ZELENA 1
+					znak = ZNAK_KOCKICA;
+					break;
+				case 3:
+					boja = 2;//PLAVA 2
+					znak = ZNAK_KOCKICA1;
+					break;
 			}
-			 drawSignToScreen(table_x+x, table_y+y, boja, znak);
+			drawSignToScreen(table_x+x, table_y+y, boja, znak);
 		}
 }
 
 // ---------------------------  DRAWING GAME TABLE ---------------------------------------
 // on every interrupt call entire game table is drawn
-
-
 void drawGameOver(){
 	for(int y=0; y<30; y++)
-			for(int x=0; x<40; x++){
-				set_cursor(y*40+x);
-				int boja = 2;
-				int znak = 0;
-				switch(gameOverTable[y][x]){
-					case 0: znak = BACKGROUND_ZNAK;    break;
-					case 1: znak = BACKGROUND_ZNAK;    break;
-					case 2: znak = ZNAK_KOCKICA   ;    break;
-					case 3: znak = ZNAK_KOCKICA1  ;   break;
-				}
-				print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
+		for(int x=0; x<40; x++){
+			set_cursor(y*40+x);
+			int boja = 2;
+			int znak = 0;
+			switch(gameOverTable[y][x]){
+				case 0: znak = BACKGROUND_ZNAK;
+					break;
+				case 1: znak = BACKGROUND_ZNAK;
+					break;
+				case 2: znak = ZNAK_KOCKICA;
+					break;
+				case 3: znak = ZNAK_KOCKICA1;
+					break;
 			}
+			print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
+		}
 	}
 
 
 void my_timer_interrupt_handler(void * baseaddr_p) {
-	//scoreRefresh();
-	/*for(int i = 0; i < 9; i++){
-		int zapis;
-		int boja = 1;
-		zapis = boja<<6;
-		int znak = i + 28;
-
-		zapis|=znak;
-		VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + TEXT_MEM_OFF + i*4, zapis);
-	}*/
-
-	/*for(int i = 0; i < 64; i++){
-		int zapis;
-		int boja = 1;
-		zapis = boja<<6;
-		int znak = i;
-
-		zapis|=znak;
-		VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + TEXT_MEM_OFF + i*4, zapis);
-	}*/
-
-
-			/*int zapis;
-			int boja = 1;
-			zapis = boja<<6;
-			int znak = 0x1C;
-
-			zapis|=znak;
-			VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + TEXT_MEM_OFF +4, zapis);*/
-
-
-
 	//drawing screen and counting interrupts.
-
 	static int frame_cnt = 0;
 	static int frame1_cnt = 0;
 	frame_cnt++;
@@ -1739,6 +1039,7 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 
 #if TEST_MODE
 	testPieces();
+
 #else
 	// Fall pieces on every second.
 	if(frame_cnt % 25 == 0){
@@ -1747,24 +1048,18 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 	}
 	movingBlocks(&pieces[0],table1);
 
-
 	// Doing table1.
 
 	// Draw (copy) table1 to tmp_table.
 	checkIfClear(&pieces[0], score);
 	copyTable(table1);
 
-
-
 	// Draw piece1 to tmp_table.
 	drawPiece(&pieces[0]);
-
-
 
 	// Check collision between 2 and 3 in tmp_table.
 	if(checkCollision(tmp_table)){
 		// There is collision.
-
 
 		// check if game is over
 		// Copy tmp_table to table1, with converting all 3 to 2.
@@ -1778,24 +1073,15 @@ void my_timer_interrupt_handler(void * baseaddr_p) {
 		spawnNewPiece(&pieces[0],&pieces[1]);
 		spawnNextPiece(&pieces[1]);
 
-
 	}
-
-
 
 	// Draw tmp_table to screen.
 	drawToScreen(6, 6,tmp_table);
 
 	// Doing table2.
 
-
-
-
-
 #endif
 }
-
-
 
 // ------------------------- INITIALIZING PLATFORM  -------------------------------------------------
 void initializingPlatform(){
@@ -1811,9 +1097,6 @@ void initializingPlatform(){
     VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x1c, 0xffff00);// foreground 4 zuta
     VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x20, 0x000000);// background color crna
     VGA_PERIPH_MEM_mWriteMemory(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x24, 0xFF0000);// frame color      6
-
-
-
 
     clear_text_screen(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
     clear_graphics_screen(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
@@ -1848,7 +1131,6 @@ int main() {
 
 	initializingPlatform();
 
-
 #if !TEST_MODE
 	drawBackground();
 	drawStaticGameMessages();
@@ -1856,7 +1138,6 @@ int main() {
 
 	spawnInitialPiece(&pieces[0]);
 	spawnNextPiece(&pieces[1]);
-	//spawnNewPiece(&pieces[1]);
 
 #endif
 
@@ -1867,5 +1148,3 @@ int main() {
 	cleanup_platform();
 	return 0;
 }
-
-
