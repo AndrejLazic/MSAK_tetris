@@ -301,7 +301,7 @@ void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 					if(piece->x == 1){
 						break;
 					}
-					if(table[piece->y-1][(piece->x)-2] == 3 || table[piece->y+1][(piece->x)-2] == 3 || table[piece->y][(piece->x)-2] == 3 ){
+					if(table[piece->y-1][(piece->x)-2] == 3 || table[piece->y+1][(piece->x)-2] == 3 || table[piece->y][(piece->x)-2] == 3 ){//sprecavanje klipovanja kockice u levo
 						break;
 					}
 
@@ -321,7 +321,7 @@ void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 						if(piece->x == 0){
 							break;
 						}
-						if(table[piece->y-2][(piece->x) -1] == 3 || table[piece->y-1][(piece->x) - 1] == 3 || table[piece->y+1][(piece->x) - 1] == 3 || table[piece->y][(piece->x) - 1] == 3 || table[piece->y+2][(piece->x) - 1] == 3){
+						if(table[piece->y-2][(piece->x) -1] == 3 || table[piece->y-1][(piece->x) - 1] == 3 || table[piece->y+1][(piece->x) - 1] == 3 || table[piece->y][(piece->x) - 1] == 3 || table[piece->y+2][(piece->x) - 1] == 3){//sprecavanje klipovanja I u levo
 							break;
 						}
 					}
@@ -365,7 +365,7 @@ void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 					if(piece->x == 7){
 						break;
 					}
-					if(table[piece->y-1][(piece->x)+1] == 3 || table[piece->y+1][(piece->x)+1] == 3 || table[piece->y][(piece->x)+1] == 3 ){
+					if(table[piece->y-1][(piece->x)+1] == 3 || table[piece->y+1][(piece->x)+1] == 3 || table[piece->y][(piece->x)+1] == 3 ){//sprecavanje klipovanja kockice u desno
 						break;
 					}
 				}
@@ -383,7 +383,7 @@ void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 						if(piece->x == 7){
 							break;
 						}
-						if(table[piece->y-2][(piece->x) + 1] == 3 || table[piece->y-1][(piece->x) + 1] == 3 || table[piece->y+1][(piece->x) + 1] == 3 || table[piece->y][(piece->x) + 1] == 3 || table[piece->y+2][(piece->x) + 1] == 3){
+						if(table[piece->y-2][(piece->x) + 1] == 3 || table[piece->y-1][(piece->x) + 1] == 3 || table[piece->y+1][(piece->x) + 1] == 3 || table[piece->y][(piece->x) + 1] == 3 || table[piece->y+2][(piece->x) + 1] == 3){//sprecavanje klipovanja I u desno
 							break;
 						}
 					}
@@ -811,7 +811,7 @@ void copyTable(u8 table1[16][8]){
 
 
 
-void drawPieceToScreen(int table_x, int table_y, int x, int y, piece_types_t piece, rotation_t rot) {//ovo nismo sada koristili
+void drawPieceToScreen(int table_x, int table_y, int x, int y, piece_types_t piece, rotation_t rot) {
 	int boja1 = 3;
 	x += table_x;
 	y += table_y;
@@ -1346,7 +1346,7 @@ void fallPeace(piece_gameplay_struct_t* piece){
 }
 
 
-void clearing(piece_gameplay_struct_t* piece){
+void clearing(){
 	int x,y;
 	for (x = 0; x < 8; x++){
 		table1[valOfY][x] = 0;
@@ -1391,16 +1391,18 @@ void clearing(piece_gameplay_struct_t* piece){
 
 
 void checkIfClear(piece_gameplay_struct_t* piece, int score){
-	int counter;
+	int counter=0;
 	for (int y = 0; y < 16; y++) {
 		for (int x = 0; x < 8; x++) {
 			if(table1[y][x] == 3){
 				counter++;
 				}
 			if (counter == 8){
+				scoreRefresh();
+
 				     // clearuj ukoliko je kaunter prebrojao osam kockica za redom
 				valOfY =y;
-				clearing(piece);
+				clearing();
 				for (int z=y; z >= 0; z--) {
 							for (int k = 0; k < 8; k++) {
 									if(z == 0){
@@ -1410,6 +1412,7 @@ void checkIfClear(piece_gameplay_struct_t* piece, int score){
 										table1[z][k] = table1[z-1][k];
 									}
 								}
+
 				}
 					}
 			}
@@ -1469,9 +1472,16 @@ void updateTable(u8 table[16][8],u8 temp_table[16][8]) { // DODALI JEDAN PARAMET
 
 
 void scoreRefresh(){
-	score += 1;
+	score += 256;
 	set_cursor(28*40 + 7);
-	score = 0xbabadeda;
+	//score = 0xbabadeda;
+	print_u32_hex(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, score);
+}
+
+void scoreInitialize(){
+	score = 0;
+	set_cursor(28*40 + 7);
+	//score = 0xbabadeda;
 	print_u32_hex(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, score);
 }
 
@@ -1688,7 +1698,7 @@ void drawGameOver(){
 
 
 void my_timer_interrupt_handler(void * baseaddr_p) {
-	scoreRefresh();
+	//scoreRefresh();
 	/*for(int i = 0; i < 9; i++){
 		int zapis;
 		int boja = 1;
@@ -1842,6 +1852,7 @@ int main() {
 #if !TEST_MODE
 	drawBackground();
 	drawStaticGameMessages();
+	scoreInitialize();
 
 	spawnInitialPiece(&pieces[0]);
 	spawnNextPiece(&pieces[1]);
