@@ -283,9 +283,9 @@ void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 					if(piece->x == 1){
 						break;
 					}
-					if(table[piece->y-1][(piece->x)-2] == 3 || table[piece->y+1][(piece->x)-2] == 3 || table[piece->y][(piece->x)-2] == 3 ){//sprecavanje klipovanja kockice u levo
-						break;
-					}
+					if(table[piece->y-1][(piece->x)-2] == 3 || table[piece->y][(piece->x)-2] == 3 ){//sprecavanje klipovanja kockice u levo
+											break;
+										}
 
 				}
 
@@ -294,18 +294,18 @@ void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 						if(piece->x == 2){
 							break;
 						}
-						if(table[piece->y-1][(piece->x)-3] == 3 || table[piece->y+1][(piece->x)-3] == 3 || table[piece->y][(piece->x)-3] == 3 ){
-							break;
-						}
+						if(table[piece->y][(piece->x)-3] == 3  ){
+													break;
+												}
 					}
 
 					if(piece->rot == R_3 || piece->rot == R_1){//vertikalno
 						if(piece->x == 0){
 							break;
 						}
-						if(table[piece->y-2][(piece->x) -1] == 3 || table[piece->y-1][(piece->x) - 1] == 3 || table[piece->y+1][(piece->x) - 1] == 3 || table[piece->y][(piece->x) - 1] == 3 || table[piece->y+2][(piece->x) - 1] == 3){//sprecavanje klipovanja I u levo
-							break;
-						}
+						if(table[piece->y-2][(piece->x) -1] == 3 || table[piece->y-1][(piece->x) - 1] == 3 || table[piece->y+1][(piece->x) - 1] == 3 || table[piece->y][(piece->x) - 1] == 3){//sprecavanje klipovanja I u levo
+													break;
+												}
 					}
 
 				}
@@ -322,6 +322,71 @@ void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 						}
 					}
 				}
+
+
+
+
+
+				if(piece->type == P_Z){
+									if(piece->rot == R_0 || piece->rot == R_2){//horizontalno z-sprecavanje klipovanja na levo
+										if(table[piece->y-1][(piece->x) -2] == 3 || table[piece->y][(piece->x) -1] == 3){
+											break;
+										}
+									}
+									if(piece->rot == R_1 || piece->rot == R_3){//vertikalno  z-sprecavanje klipovanja na levo
+										if(table[piece->y+1][(piece->x) -1] == 3 || table[piece->y][(piece->x) -1] == 3 || table[piece->y][piece->x] == 3){
+											break;
+										}
+									}
+								}
+
+
+
+
+
+
+								if(piece->type == P_S){
+									if(piece->rot == R_0 || piece->rot == R_2){//horizontalno s-sprecavanje klipovanja na levo
+										if(table[piece->y][(piece->x) -2] == 3 || table[piece->y-1][(piece->x) -1] == 3){
+											break;
+										}
+									}
+									if(piece->rot == R_1 || piece->rot == R_3){//vertikalno  s-sprecavanje klipovanja na levo
+										if(table[piece->y+1][(piece->x)] == 3 || table[piece->y][(piece->x) -1] == 3 || table[piece->y-1][(piece->x)-1] == 3){
+											break;
+										}
+									}
+								}
+
+
+								if(piece->type == P_J){// sprecavanje klipovanja na levo tetrade J
+									if(piece->rot == R_0 ){
+										if(table[piece->y][(piece->x) -2] == 3 || table[piece->y-1][(piece->x) -2] == 3){
+																			break;
+										}
+									}
+									if(piece->rot == R_1){
+										if(table[piece->y][(piece->x)-1] == 3 || table[piece->y-1][(piece->x) -1] == 3 || table[piece->y+1][(piece->x)-1] == 3){
+												break;
+										}
+									}
+
+									if(piece->rot == R_2){
+										if(table[piece->y][(piece->x)-2] == 3 || table[piece->y+1][(piece->x)] == 3){
+													break;
+										}
+									}
+
+									if(piece->rot == R_3){
+										if(table[piece->y+1][(piece->x)-2] == 3 || table[piece->y-1][(piece->x)-1] == 3 || table[piece->y][(piece->x)-1] == 3){
+													break;
+										}
+									}
+
+
+								}
+
+
 
 				if(piece->type == P_L || piece->type == P_J || piece->type == P_T){
 
@@ -347,9 +412,9 @@ void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 					if(piece->x == 7){
 						break;
 					}
-					if(table[piece->y-1][(piece->x)+1] == 3 || table[piece->y+1][(piece->x)+1] == 3 || table[piece->y][(piece->x)+1] == 3 ){//sprecavanje klipovanja kockice u desno
-						break;
-					}
+					if(table[piece->y-1][(piece->x)+1] == 3  || table[piece->y][(piece->x)+1] == 3 ){//sprecavanje klipovanja kockice u desno
+											break;
+										}
 				}
 
 				if(piece->type == P_I){
@@ -357,17 +422,17 @@ void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 						if(piece->x == 6){
 							break;
 						}
-						if(table[piece->y-1][(piece->x)+2] == 3 || table[piece->y+1][(piece->x)+2] == 3 || table[piece->y][(piece->x)+2] == 3 ){
-							break;
-						}
+						if(table[piece->y][(piece->x)+2] == 3 || table[piece->y+1][(piece->x)+2] == 3 || table[piece->y][(piece->x)+2] == 3 ){
+													break;
+												}
 					}
 					if(piece->rot == R_3 || piece->rot == R_1){//vertikalno I
 						if(piece->x == 7){
 							break;
 						}
-						if(table[piece->y-2][(piece->x) + 1] == 3 || table[piece->y-1][(piece->x) + 1] == 3 || table[piece->y+1][(piece->x) + 1] == 3 || table[piece->y][(piece->x) + 1] == 3 || table[piece->y+2][(piece->x) + 1] == 3){//sprecavanje klipovanja I u desno
-							break;
-						}
+						if(table[piece->y-2][(piece->x) + 1] == 3 || table[piece->y-1][(piece->x) + 1] == 3 || table[piece->y+1][(piece->x) + 1] == 3 || table[piece->y][(piece->x) + 1] == 3 ){//sprecavanje klipovanja I u desno
+													break;
+												}
 					}
 
 				}
@@ -377,6 +442,76 @@ void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 							break;
 						}
 				}
+
+
+
+
+								if(piece->type == P_Z){
+									if(piece->rot == R_0 || piece->rot == R_2){//horizontalno z-sprecavanje klipovanja na desno
+										if(table[piece->y][(piece->x) +2] == 3 || table[piece->y-1][(piece->x) +1] == 3){
+											break;
+										}
+									}
+									if(piece->rot == R_1 || piece->rot == R_3){//vertikalno  z-sprecavanje klipovanja na desno
+										if(table[piece->y+1][(piece->x) +1] == 3 || table[piece->y][(piece->x) +2] == 3 || table[piece->y-1][(piece->x)+2] == 3){
+											break;
+										}
+									}
+								}
+
+
+
+
+
+
+								if(piece->type == P_S){
+									if(piece->rot == R_0 || piece->rot == R_2){//horizontalno s-sprecavanje klipovanja na desno
+										if(table[piece->y][(piece->x)+ 1] == 3 || table[piece->y-1][(piece->x) +2] == 3){
+											break;
+										}
+									}
+									if(piece->rot == R_1 || piece->rot == R_3){//vertikalno  s-sprecavanje klipovanja na desno
+										if(table[piece->y][(piece->x)+2] == 3 || table[piece->y-1][(piece->x) +1] == 3 || table[piece->y+11][(piece->x)+2] == 3){
+											break;
+										}
+									}
+								}
+
+
+
+
+
+
+
+								if(piece->type == P_J){// sprecavanje klipovanja na desno tetrade J
+									if(piece->rot == R_0 ){
+										if(table[piece->y-1][(piece->x)] == 3 || table[piece->y][(piece->x) +2] == 3){
+											break;
+										}
+									}
+									if(piece->rot == R_1){
+										if(table[piece->y-1][(piece->x)+2] == 3 || table[piece->y][(piece->x) +1] == 3 || table[piece->y+1][(piece->x)+1] == 3){
+												break;
+										}
+									}
+
+									if(piece->rot == R_2){
+										if(table[piece->y][(piece->x)+2] == 3 || table[piece->y+1][(piece->x)+2] == 3){
+													break;
+										}
+									}
+
+									if(piece->rot == R_3){
+										if(table[piece->y+1][(piece->x)+1] == 3 || table[piece->y-1][(piece->x)+1] == 3 || table[piece->y][(piece->x)+1] == 3){
+													break;
+										}
+									}
+
+
+								}
+
+
+
 
 				if(piece->type == P_L || piece->type == P_J || piece->type == P_T){
 					if(piece->rot == R_3){//za L,J,T u levo sve varijante
