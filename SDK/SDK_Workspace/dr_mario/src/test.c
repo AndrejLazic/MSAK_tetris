@@ -259,19 +259,7 @@ char getPressedKey(){
 
 }
 
-bool checkCollisionX1(u8 table[16][8]){ // OVDJE SMO DODALI OVO KAO PARAMETAR INACE RADILI SA TMP TABLE
-	for (int y = 0; y < 16; y++) {
-		for (int x = 0; x < 8; x++) {
-			// Go to tmp_table and check if there is any 2 above 3.
-			if(table[y][x] == 3){
-				if(table[y][x-1] == 2){
-					return true;
-				}
-			}
-		}
-	}
-	return false;
-}
+
 
 //ovde pomera simbol po koordinati u zavisnodti od pritisnutog tastera; ovde bi trebalo ograniciti da simbol ne prelazi sa leve na desnu stranu
 void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
@@ -403,6 +391,59 @@ void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 
 				}
 
+				if(piece->type == P_L){// sprecavanje klipovanja na levo tetrade L
+													if(piece->rot == R_0 ){
+														if(table[piece->y-1][(piece->x)] == 3 || table[piece->y][(piece->x)-2] == 3){
+															break;
+														}
+													}
+													if(piece->rot == R_1){
+														if(table[piece->y][(piece->x)-1] == 3 || table[piece->y-1][(piece->x) -1] == 3 || table[piece->y+1][(piece->x)-1] == 3){
+																break;
+														}
+													}
+
+													if(piece->rot == R_2){
+														if(table[piece->y][(piece->x)-2] == 3 || table[piece->y+1][(piece->x)-2] == 3){
+																	break;
+														}
+													}
+
+													if(piece->rot == R_3){
+														if(table[piece->y+1][(piece->x)-1] == 3 || table[piece->y-1][(piece->x)-2] == 3 || table[piece->y][(piece->x)-1] == 3){
+																	break;
+														}
+													}
+
+
+												}
+				if(piece->type == P_T){// sprecavanje klipovanja na levo tetrade T
+													if(piece->rot == R_0 ){
+														if(table[(piece->y)-1][(piece->x)-1] == 3 || table[piece->y][(piece->x)-2] == 3){
+															break;
+														}
+													}
+													if(piece->rot == R_1){
+														if(table[piece->y][(piece->x)-1] == 3 || table[piece->y-1][(piece->x)-1] == 3 || table[piece->y+1][(piece->x)-1] == 3){
+																break;
+														}
+													}
+
+													if(piece->rot == R_2){
+														if(table[piece->y][(piece->x)-2] == 3 || table[(piece->y)+1][(piece->x)-1] == 3){
+																	break;
+														}
+													}
+
+													if(piece->rot == R_3){
+														if(table[piece->y][(piece->x)-2] == 3 || table[(piece->y)-1][(piece->x)-1] == 3 || table[(piece->y)+1][(piece->x)-1] == 3){
+																	break;
+														}
+													}
+
+
+												}
+
 					piece->x--;
 				break;
 
@@ -527,6 +568,60 @@ void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 
 				}
 
+				if(piece->type == P_L){// sprecavanje klipovanja na desno tetrade L
+													if(piece->rot == R_0 ){
+														if(table[(piece->y)-1][(piece->x)+2] == 3 || table[(piece->y)-1][(piece->x)+2] == 3){
+															break;
+														}
+													}
+													if(piece->rot == R_1){
+														if(table[piece->y][(piece->x)+1] == 3 || table[piece->y-1][(piece->x)+1] == 3 || table[piece->y+1][(piece->x)+2] == 3){
+																break;
+														}
+													}
+
+													if(piece->rot == R_2){
+														if(table[piece->y][(piece->x)+2] == 3 || table[(piece->y)+1][piece->x] == 3){
+																	break;
+														}
+													}
+
+													if(piece->rot == R_3){
+														if(table[piece->y+1][(piece->x)+1] == 3 || table[piece->y-1][(piece->x)] == 3 || table[piece->y][(piece->x)+1] == 3){
+																	break;
+														}
+													}
+
+
+												}
+
+				if(piece->type == P_T){// sprecavanje klipovanja na desno tetrade T
+													if(piece->rot == R_0 ){
+														if(table[(piece->y)-1][(piece->x)+1] == 3 || table[piece->y][(piece->x)+2] == 3){
+															break;
+														}
+													}
+													if(piece->rot == R_1){
+														if(table[piece->y][(piece->x)+2] == 3 || table[piece->y-1][(piece->x)+1] == 3 || table[piece->y+1][(piece->x)+1] == 3){
+																break;
+														}
+													}
+
+													if(piece->rot == R_2){
+														if(table[piece->y][(piece->x)+2] == 3 || table[(piece->y)+1][(piece->x)+1] == 3){
+																	break;
+														}
+													}
+
+													if(piece->rot == R_3){
+														if(table[piece->y][(piece->x)+1] == 3 || table[(piece->y)-1][(piece->x)+1] == 3 || table[(piece->y)+1][(piece->x)+1] == 3){
+																	break;
+														}
+													}
+
+
+												}
+
 					piece->x++;
 				break;
 
@@ -558,6 +653,11 @@ void movingBlocks(piece_gameplay_struct_t* piece, u8 table[16][8]){
 						}
 					}
 				}
+
+
+
+
+
 
 
 				piece->rot = (piece->rot + 1) % 4;
@@ -757,6 +857,255 @@ void drawSign(int x, int y){// Crtaj padajuci oblik u tmp_table.
 	tmp_table[y][x] = 2;
 }
 
+
+
+void fallPeace(piece_gameplay_struct_t* piece){
+	piece->y++;
+
+}
+
+void clearing(){
+	int x,y;
+	for (x = 0; x < 8; x++){
+		table1[valOfY][x] = 0;
+	}
+	updateTable(tmp_table,table1);
+}
+
+void checkIfClear(piece_gameplay_struct_t* piece, int score){
+	int counter = 0;
+	for (int y = 0; y < 16; y++) {
+		for (int x = 0; x < 8; x++) {
+			if(table1[y][x] == 3){
+				counter++;
+				}
+			if (counter == 8){
+				scoreRefresh();
+				valOfY =y;
+				clearing();
+				for (int z=y; z >= 0; z--) {
+					for (int k = 0; k < 8; k++) {
+						if(z == 0){
+							table1[z][k] = 0;
+						}
+						else{
+							table1[z][k] = table1[z-1][k];
+						}
+					}
+				}
+			}
+		}
+		counter = 0;
+	}
+}
+
+bool checkCollision(u8 table[16][8]){ // OVDJE SMO DODALI OVO KAO PARAMETAR INACE RADILI SA TMP TABLE
+	for (int y = 0; y < 16; y++) {
+		for (int x = 0; x < 8; x++) {
+			if(table[y][x] == 3){
+				if(table[y-1][x] == 2){
+					return true;
+				}
+			}
+			if(y == 15){
+				if(table[y][x] == 2){
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+void updateTable(u8 table[16][8],u8 temp_table[16][8]) { // DODALI JEDAN PARAMETAR, TMP_TABELA
+	for (int y = 0; y < 16; y++) {
+		for (int x = 0; x < 8; x++) {
+			switch(temp_table[y][x]){
+			case 2:
+				table[y][x] = 3;
+				break;
+			case 3:
+				table[y][x] = 3;
+				break;
+			}
+		}
+	}
+}
+
+void scoreRefresh(){
+	score += 256;
+	set_cursor(28*40 + 7);
+	print_u32_hex(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, score);
+}
+
+void scoreInitialize(){
+	score = 0;
+	set_cursor(28*40 + 7);
+	print_u32_hex(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, score);
+}
+
+void spawnInitialPiece(piece_gameplay_struct_t* piece) {
+	piece->type = rand()%7;
+	piece->rot = R_0;
+	piece->x = 4;
+	piece->y = 0;
+	drawNext(piece->type, piece->rot);
+}
+
+void spawnNextPiece(piece_gameplay_struct_t* next_piece) {
+	next_piece->type = rand()%7;
+	next_piece->rot = R_0;
+	next_piece->x = 4;
+	next_piece->y = 0;
+	drawActualNext(next_piece->type, next_piece->rot);
+}
+
+void spawnNewPiece(piece_gameplay_struct_t* piece, piece_gameplay_struct_t* next_piece) {
+	piece->type = next_piece->type;
+	piece->rot = R_0;
+	piece->x = 4;
+	piece->y = 0;
+	drawNext(piece->type, piece->rot);
+}
+
+bool checkGameOver(piece_gameplay_struct_t* piece){
+	for (int x = 0; x < 8; x++) {
+		if (tmp_table[0][x] == 3){
+			return true;
+		}
+	}
+	return false;
+}
+
+void testPieces(void) {
+	drawPieceToScreen(0, 0, 4, 4, P_O, R_0);
+	drawPieceToScreen(5, 0, 4, 4, P_I, R_0);
+	drawPieceToScreen(10, 0, 4, 4, P_I, R_1);
+	drawPieceToScreen(15, 0, 4, 4, P_S, R_0);
+	drawPieceToScreen(20, 0, 4, 4, P_S, R_1);
+	drawPieceToScreen(25, 0, 4, 4, P_Z, R_0);
+	drawPieceToScreen(30, 0, 4, 4, P_Z, R_1);
+	drawPieceToScreen(0, 5, 4, 4, P_J, R_0);
+	drawPieceToScreen(5, 5, 4, 4, P_J, R_1);
+	drawPieceToScreen(10, 5, 4, 4, P_J, R_2);
+	drawPieceToScreen(15, 5, 4, 4, P_J, R_3);
+	drawPieceToScreen(20, 5, 4, 4, P_L, R_0);
+	drawPieceToScreen(25, 5, 4, 4, P_L, R_1);
+	drawPieceToScreen(30, 5, 4, 4, P_L, R_2);
+	drawPieceToScreen(0, 10, 4, 4, P_L, R_3);
+	drawPieceToScreen(5, 10, 4, 4, P_T, R_0);
+	drawPieceToScreen(10, 10, 4, 4, P_T, R_1);
+	drawPieceToScreen(15, 10, 4, 4, P_T, R_2);
+	drawPieceToScreen(20, 10, 4, 4, P_T, R_3);
+}
+
+void drawNext(piece_types_t piece_t, rotation_t rot_t){
+	drawTable_next(table_next,16,14);
+}
+
+void drawActualNext(piece_types_t piece_t, rotation_t rot_t){
+	drawPieceToScreen(18, 15, 0, 0, piece_t, rot_t);
+}
+
+
+
+// ------------------------------- DRAWING THE GAME STATIC MESSAGES --------------------------
+// draws strings on background, its called only on the start of the game
+void drawStaticGameMessages(){
+	//Player1
+	set_cursor(3*40 + 4);
+    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sPlayer1, 7);
+
+	// Player2
+	set_cursor(3*40 + 29);
+    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sPlayer2, 7);
+
+	// NEXT
+    set_cursor(13*40 + 17);
+    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sNEXT, 4);
+
+	//LEVEL
+	//set_cursor(27*40 + 17);
+    //print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sLEVEL, 5);
+
+    //SCORE1
+    set_cursor(26*40 + 7);
+    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sSCORE1, 6);
+
+    //SCORE2
+    set_cursor(26*40 + 27);
+    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sSCORE2, 6);
+}
+
+// -------------------------- DRAWING BACKGROUND -----------------------------------------
+// drawing game background, it get called only once in begginning of the game
+void drawBackground(){
+	for(int y=0; y<30; y++)
+		for(int x=0; x<40; x++){
+			set_cursor(y*40+x);
+			int boja = 0;
+			int znak = 0;
+			switch(backround[y][x]){
+				case 0: znak = BACKGROUND_ZNAK;    break;
+				case 1: znak = BACKGROUND_ZNAK;    break;
+				case 2: znak = ZNAK_KOCKICA   ;    break;
+				case 3: znak = ZNAK_KOCKICA1  ;   break;
+				case 4: znak = UGAO_GORNJI_LEVI;   break;
+				case 5: znak = UGAO_DONJI_DESNI;   break;
+				case 6: znak = UGAO_GORNJI_DESNI;  break;
+				case 7: znak = UGAO_DONJI_LEVI;    break;
+			}
+			print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
+		}
+}
+
+void drawToScreen(int table_x, int table_y, u8 table[16][8]){
+	//int boja1;
+	//int boja = boja1;
+	for(int y=0; y<16; y++)
+		for(int x=0; x<8; x++){
+			int boja = 0;
+			int znak = 0;
+			switch (table[y][x]) {
+				case 0:
+					boja = 0; //0
+					znak = BACKGROUND_ZNAK;
+					break;
+				case 2:
+					boja = 1; //ZELENA 1
+					znak = ZNAK_KOCKICA;
+					break;
+				case 3:
+					boja = 2;//PLAVA 2
+					znak = ZNAK_KOCKICA1;
+					break;
+			}
+			drawSignToScreen(table_x+x, table_y+y, boja, znak);
+		}
+}
+
+// ---------------------------  DRAWING GAME TABLE ---------------------------------------
+// on every interrupt call entire game table is drawn
+void drawGameOver(){
+	for(int y=0; y<30; y++)
+		for(int x=0; x<40; x++){
+			set_cursor(y*40+x);
+			int boja = 2;
+			int znak = 0;
+			switch(gameOverTable[y][x]){
+				case 0: znak = BACKGROUND_ZNAK;
+					break;
+				case 1: znak = BACKGROUND_ZNAK;
+					break;
+				case 2: znak = ZNAK_KOCKICA;
+					break;
+				case 3: znak = ZNAK_KOCKICA1;
+					break;
+			}
+			print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
+		}
+	}
+
 void drawPiece(const piece_gameplay_struct_t* piece){//iscrtava simbol u zavisnosti od rotacije postavljajuci konkretne koordinate
 	switch (piece->type) {
 		case P_O:
@@ -914,255 +1263,6 @@ void drawPiece(const piece_gameplay_struct_t* piece){//iscrtava simbol u zavisno
 			break;
 		}
 }
-
-void fallPeace(piece_gameplay_struct_t* piece){
-	piece->y++;
-
-}
-
-void clearing(){
-	int x,y;
-	for (x = 0; x < 8; x++){
-		table1[valOfY][x] = 0;
-	}
-	updateTable(tmp_table,table1);
-}
-
-void checkIfClear(piece_gameplay_struct_t* piece, int score){
-	int counter = 0;
-	for (int y = 0; y < 16; y++) {
-		for (int x = 0; x < 8; x++) {
-			if(table1[y][x] == 3){
-				counter++;
-				}
-			if (counter == 8){
-				scoreRefresh();
-				valOfY =y;
-				clearing();
-				for (int z=y; z >= 0; z--) {
-					for (int k = 0; k < 8; k++) {
-						if(z == 0){
-							table1[z][k] = 0;
-						}
-						else{
-							table1[z][k] = table1[z-1][k];
-						}
-					}
-				}
-			}
-		}
-		counter = 0;
-	}
-}
-
-bool checkCollision(u8 table[16][8]){ // OVDJE SMO DODALI OVO KAO PARAMETAR INACE RADILI SA TMP TABLE
-	for (int y = 0; y < 16; y++) {
-		for (int x = 0; x < 8; x++) {
-			if(table[y][x] == 3){
-				if(table[y-1][x] == 2){
-					return true;
-				}
-			}
-			if(y == 15){
-				if(table[y][x] == 2){
-					return true;
-				}
-			}
-		}
-	}
-	return false;
-}
-
-void updateTable(u8 table[16][8],u8 temp_table[16][8]) { // DODALI JEDAN PARAMETAR, TMP_TABELA
-	for (int y = 0; y < 16; y++) {
-		for (int x = 0; x < 8; x++) {
-			switch(temp_table[y][x]){
-			case 2:
-				table[y][x] = 3;
-				break;
-			case 3:
-				table[y][x] = 3;
-				break;
-			}
-		}
-	}
-}
-
-void scoreRefresh(){
-	score += 256;
-	set_cursor(28*40 + 7);
-	print_u32_hex(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, score);
-}
-
-void scoreInitialize(){
-	score = 0;
-	set_cursor(28*40 + 7);
-	print_u32_hex(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, score);
-}
-
-void spawnInitialPiece(piece_gameplay_struct_t* piece) {
-	piece->type = rand()%7;
-	piece->rot = R_0;
-	piece->x = 4;
-	piece->y = 0;
-	drawNext(piece->type, piece->rot);
-}
-
-void spawnNextPiece(piece_gameplay_struct_t* next_piece) {
-	next_piece->type = rand()%7;
-	next_piece->rot = R_0;
-	next_piece->x = 4;
-	next_piece->y = 0;
-	drawActualNext(next_piece->type, next_piece->rot);
-}
-
-void spawnNewPiece(piece_gameplay_struct_t* piece, piece_gameplay_struct_t* next_piece) {
-	piece->type = next_piece->type;
-	piece->rot = R_0;
-	piece->x = 4;
-	piece->y = 0;
-	drawNext(piece->type, piece->rot);
-}
-
-bool checkGameOver(piece_gameplay_struct_t* piece){
-	for (int x = 0; x < 8; x++) {
-		if (tmp_table[0][x] == 3){
-			return true;
-		}
-	}
-	return false;
-}
-
-void testPieces(void) {
-	drawPieceToScreen(0, 0, 4, 4, P_O, R_0);
-	drawPieceToScreen(5, 0, 4, 4, P_I, R_0);
-	drawPieceToScreen(10, 0, 4, 4, P_I, R_1);
-	drawPieceToScreen(15, 0, 4, 4, P_S, R_0);
-	drawPieceToScreen(20, 0, 4, 4, P_S, R_1);
-	drawPieceToScreen(25, 0, 4, 4, P_Z, R_0);
-	drawPieceToScreen(30, 0, 4, 4, P_Z, R_1);
-	drawPieceToScreen(0, 5, 4, 4, P_J, R_0);
-	drawPieceToScreen(5, 5, 4, 4, P_J, R_1);
-	drawPieceToScreen(10, 5, 4, 4, P_J, R_2);
-	drawPieceToScreen(15, 5, 4, 4, P_J, R_3);
-	drawPieceToScreen(20, 5, 4, 4, P_L, R_0);
-	drawPieceToScreen(25, 5, 4, 4, P_L, R_1);
-	drawPieceToScreen(30, 5, 4, 4, P_L, R_2);
-	drawPieceToScreen(0, 10, 4, 4, P_L, R_3);
-	drawPieceToScreen(5, 10, 4, 4, P_T, R_0);
-	drawPieceToScreen(10, 10, 4, 4, P_T, R_1);
-	drawPieceToScreen(15, 10, 4, 4, P_T, R_2);
-	drawPieceToScreen(20, 10, 4, 4, P_T, R_3);
-}
-
-void drawNext(piece_types_t piece_t, rotation_t rot_t){
-	drawTable_next(table_next,16,14);
-}
-
-void drawActualNext(piece_types_t piece_t, rotation_t rot_t){
-	drawPieceToScreen(18, 15, 0, 0, piece_t, rot_t);
-}
-
-void drawNextInTable(piece_types_t piece_t){
-	drawNext(piece_t, R_0);
-}
-
-// ------------------------------- DRAWING THE GAME STATIC MESSAGES --------------------------
-// draws strings on background, its called only on the start of the game
-void drawStaticGameMessages(){
-	//Player1
-	set_cursor(3*40 + 4);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sPlayer1, 7);
-
-	// Player2
-	set_cursor(3*40 + 29);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sPlayer2, 7);
-
-	// NEXT
-    set_cursor(13*40 + 17);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sNEXT, 4);
-
-	//LEVEL
-	//set_cursor(27*40 + 17);
-    //print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sLEVEL, 5);
-
-    //SCORE1
-    set_cursor(26*40 + 7);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sSCORE1, 6);
-
-    //SCORE2
-    set_cursor(26*40 + 27);
-    print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, 1, sSCORE2, 6);
-}
-
-// -------------------------- DRAWING BACKGROUND -----------------------------------------
-// drawing game background, it get called only once in begginning of the game
-void drawBackground(){
-	for(int y=0; y<30; y++)
-		for(int x=0; x<40; x++){
-			set_cursor(y*40+x);
-			int boja = 0;
-			int znak = 0;
-			switch(backround[y][x]){
-				case 0: znak = BACKGROUND_ZNAK;    break;
-				case 1: znak = BACKGROUND_ZNAK;    break;
-				case 2: znak = ZNAK_KOCKICA   ;    break;
-				case 3: znak = ZNAK_KOCKICA1  ;   break;
-				case 4: znak = UGAO_GORNJI_LEVI;   break;
-				case 5: znak = UGAO_DONJI_DESNI;   break;
-				case 6: znak = UGAO_GORNJI_DESNI;  break;
-				case 7: znak = UGAO_DONJI_LEVI;    break;
-			}
-			print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
-		}
-}
-
-void drawToScreen(int table_x, int table_y, u8 table[16][8]){
-	//int boja1;
-	//int boja = boja1;
-	for(int y=0; y<16; y++)
-		for(int x=0; x<8; x++){
-			int boja = 0;
-			int znak = 0;
-			switch (table[y][x]) {
-				case 0:
-					boja = 0; //0
-					znak = BACKGROUND_ZNAK;
-					break;
-				case 2:
-					boja = 1; //ZELENA 1
-					znak = ZNAK_KOCKICA;
-					break;
-				case 3:
-					boja = 2;//PLAVA 2
-					znak = ZNAK_KOCKICA1;
-					break;
-			}
-			drawSignToScreen(table_x+x, table_y+y, boja, znak);
-		}
-}
-
-// ---------------------------  DRAWING GAME TABLE ---------------------------------------
-// on every interrupt call entire game table is drawn
-void drawGameOver(){
-	for(int y=0; y<30; y++)
-		for(int x=0; x<40; x++){
-			set_cursor(y*40+x);
-			int boja = 2;
-			int znak = 0;
-			switch(gameOverTable[y][x]){
-				case 0: znak = BACKGROUND_ZNAK;
-					break;
-				case 1: znak = BACKGROUND_ZNAK;
-					break;
-				case 2: znak = ZNAK_KOCKICA;
-					break;
-				case 3: znak = ZNAK_KOCKICA1;
-					break;
-			}
-			print_char(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, boja, znak);
-		}
-	}
 
 
 void my_timer_interrupt_handler(void * baseaddr_p) {
